@@ -7,7 +7,7 @@ Klientský report hledanosti (Google Ads Keyword Planner) pro Flamaro.
   Kategorie se nikdy nesčítají dohromady.
 - Filtr klíčových slov: vyhledávání a zaškrtávání, grafy a tabulky se přepočítají
   jen z vybraných slov. Vybraný pohled je v adrese, odkaz jde sdílet.
-- Data: měsíční hledanost v Česku z Keyword Planneru, čísla jsou zaokrouhlená Googlem.
+- Data: měsíční hledanost v Česku z Google Keyword Planneru.
   Varianty se stejnou měsíční řadou (např. s diakritikou a bez) se počítají jednou.
   Období a datum poslední aktualizace jsou uvedené přímo ve stránce.
 
