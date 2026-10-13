@@ -844,14 +844,14 @@ function renderViews(cat, agg) {
       ctx.setLineDash([]);
       ctx.fillStyle = '#ff4a21';
       ctx.font = '11px ' + FONT;
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
       var label = 'rebranding 7/2026';
       var width = ctx.measureText(label).width;
       var maxWidth = Math.max(1, area.right - area.left - 8);
-      var textX = Math.max(area.left + 4,
-        Math.min(x + 5, area.right - Math.min(width, maxWidth) - 4));
-      ctx.fillText(label, textX, area.top + 4, maxWidth);
+      var textX = Math.max(area.left + 4 + Math.min(width, maxWidth),
+        Math.min(x - 5, area.right - 4));
+      ctx.fillText(label, textX, area.top - 6, maxWidth);
       ctx.restore();
     }
   };
@@ -1254,6 +1254,7 @@ function renderViews(cat, agg) {
   if (isBrand) {
     monthlyConfig.data.datasets = monthlyBrandDatasets();
     monthlyConfig.plugins = [rebrandingPlugin];
+    monthlyConfig.options.layout = { padding: { top: 24 } };
   }
   monthlyChart = new Chart(document.getElementById(monthlyId), monthlyConfig);
   charts.push(monthlyChart);
