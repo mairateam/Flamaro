@@ -292,6 +292,25 @@ table.heatmap th.yr-label{white-space:nowrap}
 .year-chip-dot{display:inline-block;flex:0 0 10px;width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 1px #fff,0 0 0 2px #64748b}
 .two-col.solo{grid-template-columns:minmax(0,1fr)}
 @media(max-width:640px){.chart-wrap.tall{height:340px}}
+.brand-switch{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0;max-width:100%;margin:0 0 16px}
+.brand-switch[hidden]{display:none}
+.brand-switch-label{color:var(--ink-2);font-size:11px;line-height:1.4;letter-spacing:.08em;text-transform:uppercase}
+.line-filter,.seasonal-brand-switch{min-width:0;max-width:100%}
+.brand-switch .year-chip,.line-filter .year-chip,.seasonal-brand-switch .year-chip{border-radius:0;border-color:var(--grey);background:var(--white);color:var(--green);overflow-wrap:anywhere}
+.brand-switch .year-chip[aria-pressed="true"],.line-filter .year-chip[aria-pressed="true"],.seasonal-brand-switch .year-chip[aria-pressed="true"]{border-color:var(--green);background:var(--green);color:var(--white)}
+.brand-switch .year-chip:focus-visible,.line-filter .year-chip:focus-visible,.seasonal-brand-switch .year-chip:focus-visible{outline-color:var(--orange)}
+.tag-brand{display:inline-block;box-sizing:border-box;max-width:100%;padding:2px 5px;border-radius:0;font-size:11px;font-weight:400;line-height:1.4;vertical-align:middle;white-space:normal;overflow-wrap:anywhere}
+.tag-brand.brand-topgrily,.kw-item .tag-brand.brand-topgrily{background:#dfe9e5;color:#083027}
+.tag-brand.brand-flamaro,.kw-item .tag-brand.brand-flamaro{background:#ffe3da;color:#8b250e}
+.kw-item .tag.tag-brand{flex:0 1 auto;width:auto;max-width:calc(100% - 24px);margin-left:24px}
+.kws-wrap td .tag-brand{margin-left:6px}
+@media(max-width:640px){.brand-switch-label{flex:0 0 100%}.brand-switch .year-chip,.line-filter .year-chip,.seasonal-brand-switch .year-chip{padding:7px 10px}}
+.report-nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}
+.report-nav a{display:inline-block;padding:8px 14px;border:2px solid rgba(255,255,255,.35);color:var(--white);font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;text-decoration:none}
+.report-nav a:hover,.report-nav a:focus-visible{border-color:var(--orange);outline:none}
+.report-nav a[aria-current="page"]{background:var(--orange);border-color:var(--orange)}
+.tabs[hidden]{display:none}
+@media(max-width:500px){.report-nav{flex:1 1 100%}.report-nav a{flex:1 1 0;text-align:center}}
 
 </style>
 </head>
@@ -300,6 +319,7 @@ table.heatmap th.yr-label{white-space:nowrap}
 <header class="site-header">
   <div class="header-inner">
     <svg class="logo-maira" viewBox="384.89 417.14 1150.22 176" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MAIRA" focusable="false"><g fill="#f04e2a"><path d="M384.89,417.14h115.25l34.61,87.02,34.73-87.02h114.63v176h-80.76l.37-118.31-45.29,118.31h-53.76l-45.17-118.31.25,118.31h-74.87v-176Z"/><path d="M760.3,417.14h102.85l81,176h-92.05l-7.12-19.88h-67.87l-7,19.88h-90.45l80.63-176ZM830.99,533.86l-20.25-56.95-19.88,56.95h40.13Z"/><path d="M939.82,417.14h86.04v176h-86.04v-176Z"/><path d="M1041.39,417.14h171.09c41.36,0,62.96,21.48,62.96,55.48v1.35c0,24.18-11.66,41.48-34.49,48.23,8.84,4.05,14.11,11.66,18.66,23.93l8.59,23.56c4.54,12.4,8.35,18.41,13.87,22.21v1.23h-93.03c-2.95-4.42-5.4-11.78-7.85-21.85l-2.95-13.62c-2.45-9.7-7.85-13.99-17.92-13.99h-33.14v49.46h-85.79v-176ZM1189.65,486.12v-.98c0-9.57-6.63-16.2-18.41-16.2h-44.06v33.38h44.06c11.78,0,18.41-6.63,18.41-16.2Z"/><path d="M1351.26,417.14h102.85l81,176h-92.05l-7.12-19.88h-67.87l-6.99,19.88h-90.46l80.64-176ZM1421.95,533.86l-20.25-56.95-19.88,56.95h40.13Z"/></g></svg>
+    <nav class="report-nav" aria-label="Přepínání reportů"><a href="index.html" aria-current="page">Výkon</a><a href="brand.html">Brand</a></nav>
     <div class="header-title">
       <div class="header-name">FLAMARO · Hledanost klíčových slov</div>
       <div class="header-sub">Google Ads Keyword Planner</div>
@@ -336,6 +356,13 @@ table.heatmap th.yr-label{white-space:nowrap}
   </details>
 
   <div class="tabs tabs-category" id="categoryTabs" role="tablist" aria-label="Výběr kategorie"></div>
+
+  <div class="brand-switch year-filter" id="brandSwitch" role="group" aria-label="Pohled na brand" hidden>
+    <span class="brand-switch-label">Pohled</span>
+    <button type="button" class="year-chip" data-brand-view="all" aria-pressed="true">Celý brand</button>
+    <button type="button" class="year-chip" data-brand-view="topgrily" aria-pressed="false">Top Grily</button>
+    <button type="button" class="year-chip" data-brand-view="flamaro" aria-pressed="false">Flamaro</button>
+  </div>
 
   <details class="filter-box" id="filterBox" open>
     <summary>Filtr klíčových slov</summary>
@@ -592,6 +619,23 @@ function renderViews(cat, agg) {
   var seasonalId = 'flamaro-seasonal-' + serial;
   var keywordsId = 'flamaro-keywords-' + serial;
   var grouped = groupByYear(agg.months, agg.total);
+  var isBrand = cat.id === 'brand';
+  var brandData = isBrand ? {
+    topgrily: brandSeries('topgrily'),
+    flamaro: brandSeries('flamaro'),
+    all: agg.total.slice()
+  } : null;
+  var seasonalGrouped = isBrand
+    ? groupByYear(agg.months, brandData[seasonalBrand])
+    : grouped;
+  var brandColors = {
+    topgrily: '#083027',
+    flamaro: '#ff4a21',
+    all: '#4f8a78'
+  };
+  var monthlyLinesId = monthlyId + '-lines';
+  var seasonalBrandId = seasonalId + '-brand';
+  var monthlyChart = null;
   var years = Object.keys(grouped).sort(function (a, b) {
     return Number(a) - Number(b);
   });
@@ -740,6 +784,78 @@ function renderViews(cat, agg) {
       : yearColor(index, total);
   }
 
+  function brandChips(attribute, seasonal) {
+    return brandLineKeys.map(function (key) {
+      var pressed = seasonal ? seasonalBrand === key : selectedBrandLines[key];
+      return '<button type="button" class="year-chip" aria-pressed="' +
+        (pressed ? 'true' : 'false') + '" ' + attribute + '="' + key + '">' +
+        (seasonal ? '' : '<span class="year-chip-dot" aria-hidden="true" style="background-color:' +
+        brandColors[key] + '"></span>') + brandName(key) + '</button>';
+    }).join('');
+  }
+
+  var monthlyControls = isBrand
+    ? '<div class="year-filter line-filter" id="' + monthlyLinesId +
+      '" role="group" aria-label="Linie měsíční hledanosti">' +
+      brandChips('data-brand-line', false) + '</div>'
+    : '';
+  var seasonalControls = isBrand
+    ? '<div class="year-filter seasonal-brand-switch" id="' + seasonalBrandId +
+      '" role="group" aria-label="Značka v grafu sezónnosti">' +
+      brandChips('data-seasonal-brand', true) + '</div>'
+    : '';
+
+  function monthlyBrandDatasets() {
+    return brandLineKeys.map(function (key) {
+      return {
+        label: brandName(key),
+        data: brandData[key].slice(),
+        hidden: !selectedBrandLines[key],
+        fill: false,
+        borderColor: brandColors[key],
+        backgroundColor: brandColors[key],
+        borderDash: key === 'all' ? [6, 4] : [],
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 0,
+        pointHoverRadius: 5
+      };
+    });
+  }
+
+  var rebrandingPlugin = {
+    id: 'brandRebranding',
+    afterDraw: function (chart) {
+      var index = agg.months.indexOf('2026-07');
+      if (index === -1 || !chart.chartArea || !chart.scales.x) return;
+      var area = chart.chartArea;
+      var x = chart.scales.x.getPixelForValue(index);
+      if (!isFinite(x) || x < area.left || x > area.right) return;
+
+      var ctx = chart.ctx;
+      ctx.save();
+      ctx.strokeStyle = '#ff4a21';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(x, area.top);
+      ctx.lineTo(x, area.bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#ff4a21';
+      ctx.font = '11px ' + FONT;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      var label = 'rebranding 7/2026';
+      var width = ctx.measureText(label).width;
+      var maxWidth = Math.max(1, area.right - area.left - 8);
+      var textX = Math.max(area.left + 4,
+        Math.min(x + 5, area.right - Math.min(width, maxWidth) - 4));
+      ctx.fillText(label, textX, area.top + 4, maxWidth);
+      ctx.restore();
+    }
+  };
+
   var seasonalFilterId = seasonalId + '-years';
   var availableMonths = groupByYear(agg.months, agg.months.map(function () {
     return 1;
@@ -784,7 +900,9 @@ function renderViews(cat, agg) {
       return {
         label: year,
         data: MONTH_ABBR.map(function (_, monthIndex) {
-          var value = yearValues(year)[monthIndex];
+          var value = isBrand
+            ? (seasonalGrouped[String(year)] || [])[monthIndex]
+            : yearValues(year)[monthIndex];
           return hasValue(value) ? value : null;
         }),
         borderColor: color, backgroundColor: color, borderWidth: 2.5,
@@ -864,11 +982,13 @@ function renderViews(cat, agg) {
     '</div>' +
     '<div class="two-col solo">' +
       '<section class="card"><h2>Měsíční hledanost (celé období)</h2>' +
+        monthlyControls +
         '<div class="chart-wrap"><canvas id="' + monthlyId +
         '" role="img" aria-label="' + html('Měsíční hledanost za celé období: ' + cat.name) +
         '"></canvas></div></section>' +
     '</div>' +
     '<section class="card seasonal-card"><h2>' + html(seasonalTitle) + '</h2>' +
+      seasonalControls +
       '<div class="year-filter" id="' + seasonalFilterId +
       '" role="group" aria-label="Roky v grafu sezónnosti">' + seasonalChips + '</div>' +
       '<div class="chart-wrap tall"><canvas id="' + seasonalId +
@@ -926,7 +1046,7 @@ function renderViews(cat, agg) {
     });
 
     keywordBody.innerHTML = sorted.map(function (row) {
-      var tags = '';
+      var tags = isBrand ? ' ' + brandTag(row.brand) : '';
       if (row.same) {
         tags += ' <span class="tag-same">stejná řada jako ' + html(row.same) + '</span>';
       }
@@ -976,6 +1096,52 @@ function renderViews(cat, agg) {
   });
 
   renderKeywordRows();
+
+  function filterButton(event, container, attribute) {
+    var button = event.target;
+    while (button && button !== container) {
+      if (button.nodeType === 1 && button.tagName === 'BUTTON' &&
+          button.hasAttribute(attribute)) return button;
+      button = button.parentNode;
+    }
+    return null;
+  }
+
+  if (isBrand) {
+    var lineFilter = document.getElementById(monthlyLinesId);
+    lineFilter.addEventListener('click', function (event) {
+      var button = filterButton(event, lineFilter, 'data-brand-line');
+      if (!button) return;
+      var key = button.getAttribute('data-brand-line');
+      var enabled = brandLineKeys.filter(function (line) {
+        return selectedBrandLines[line];
+      });
+      if (selectedBrandLines[key] && enabled.length === 1) return;
+      selectedBrandLines[key] = !selectedBrandLines[key];
+      button.setAttribute('aria-pressed', selectedBrandLines[key] ? 'true' : 'false');
+      if (monthlyChart) {
+        monthlyChart.setDatasetVisibility(
+          brandLineKeys.indexOf(key), selectedBrandLines[key]);
+        monthlyChart.update();
+      }
+      replaceSelectionHash();
+    });
+
+    var brandFilter = document.getElementById(seasonalBrandId);
+    brandFilter.addEventListener('click', function (event) {
+      var button = filterButton(event, brandFilter, 'data-seasonal-brand');
+      if (!button) return;
+      seasonalBrand = button.getAttribute('data-seasonal-brand');
+      seasonalGrouped = groupByYear(agg.months, brandData[seasonalBrand]);
+      var buttons = brandFilter.querySelectorAll('button[data-seasonal-brand]');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute('aria-pressed',
+          buttons[i].getAttribute('data-seasonal-brand') === seasonalBrand
+            ? 'true' : 'false');
+      }
+      updateSeasonalSelection();
+    });
+  }
 
   var seasonalFilter = document.getElementById(seasonalFilterId);
   seasonalFilter.addEventListener('click', function (event) {
@@ -1035,7 +1201,16 @@ function renderViews(cat, agg) {
     };
   }
 
-  charts.push(new Chart(document.getElementById(monthlyId), {
+  var monthlyTooltip = tooltipOptions(false);
+  if (isBrand) {
+    monthlyTooltip.mode = 'index';
+    monthlyTooltip.displayColors = true;
+    monthlyTooltip.callbacks.label = function (context) {
+      return context.dataset.label + ': ' + fmtNum(context.parsed.y);
+    };
+  }
+
+  var monthlyConfig = {
     type: 'line',
     data: {
       labels: agg.months.map(function (month) { return ymLabel(month); }),
@@ -1057,7 +1232,7 @@ function renderViews(cat, agg) {
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: tooltipOptions(false)
+        tooltip: monthlyTooltip
       },
       scales: {
         y: yAxis(),
@@ -1075,7 +1250,13 @@ function renderViews(cat, agg) {
         }
       }
     }
-  }));
+  };
+  if (isBrand) {
+    monthlyConfig.data.datasets = monthlyBrandDatasets();
+    monthlyConfig.plugins = [rebrandingPlugin];
+  }
+  monthlyChart = new Chart(document.getElementById(monthlyId), monthlyConfig);
+  charts.push(monthlyChart);
 
   var seasonalTooltip = tooltipOptions(true);
   seasonalTooltip.callbacks.title = function () { return ''; };
@@ -1128,6 +1309,63 @@ function renderViews(cat, agg) {
 var activeCategory = DATA.categories[0];
 var selectedKeywords;
 var selectedYears = null;
+var brandLineKeys = ["topgrily", "flamaro", "all"];
+var selectedBrandLines = { topgrily: true, flamaro: true, all: true };
+var seasonalBrand = "all";
+
+function resetBrandState() {
+  selectedBrandLines = { topgrily: true, flamaro: true, all: true };
+  seasonalBrand = "all";
+}
+
+function brandName(brand) {
+  return brand === "topgrily" ? "Top Grily" :
+    brand === "flamaro" ? "Flamaro" : "Celý brand";
+}
+
+function brandTag(brand) {
+  if (brand !== "topgrily" && brand !== "flamaro") return "";
+  return '<span class="tag tag-brand brand-' + brand + '">' +
+    brandName(brand) + "</span>";
+}
+
+function brandSeries(brand) {
+  var total = DATA.months.map(function () { return 0; });
+  var groups = new Set();
+  activeCategory.keywords.forEach(function (keyword, index) {
+    if (!selectedKeywords[index] || keyword.foreign ||
+        (brand !== "all" && keyword.brand !== brand)) return;
+    if (keyword.grp != null) {
+      if (groups.has(keyword.grp)) return;
+      groups.add(keyword.grp);
+    }
+    for (var month = 0; month < total.length; month++) {
+      total[month] += keyword.monthly[month];
+    }
+  });
+  return total;
+}
+
+function renderBrandSwitch() {
+  ui.brandSwitch.hidden = activeCategory.id !== "brand";
+  if (ui.brandSwitch.hidden) return;
+
+  var pressed = null;
+  ["all", "topgrily", "flamaro"].some(function (brand) {
+    var matches = activeCategory.keywords.every(function (keyword, index) {
+      return !!selectedKeywords[index] ===
+        (brand === "all" || keyword.brand === brand);
+    });
+    if (matches) pressed = brand;
+    return matches;
+  });
+
+  var buttons = ui.brandSwitch.querySelectorAll("button[data-brand-view]");
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].setAttribute("aria-pressed",
+      buttons[i].getAttribute("data-brand-view") === pressed ? "true" : "false");
+  }
+}
 
 function availableYears() {
   return Object.keys(groupByYear(DATA.months, DATA.months.map(function () {
@@ -1151,11 +1389,26 @@ function normalizeSelectedYears(selection) {
   return !count || count === years.length ? null : normalized;
 }
 
+function parseHashSegments(raw) {
+  var parts = raw.split("/");
+  if (!parts[0]) return null;
+  var result = { category: parts[0], segments: {} };
+  for (var i = 1; i < parts.length; i++) {
+    var match = /^(sel|y|l|s)=([^/]*)$/.exec(parts[i]);
+    if (!match ||
+        Object.prototype.hasOwnProperty.call(result.segments, match[1])) {
+      return null;
+    }
+    result.segments[match[1]] = match[2];
+  }
+  return result;
+}
+
 function parseYearsFromHash(raw) {
-  var match = /^([^/]+)(?:\/sel=([^/]*))?(?:\/y=(.*))?$/.exec(raw);
-  if (!match || typeof match[3] === "undefined") return null;
+  var parsed = parseHashSegments(raw);
+  if (!parsed || typeof parsed.segments.y === "undefined") return null;
   var selection = {};
-  match[3].split(".").forEach(function (token) {
+  parsed.segments.y.split(".").forEach(function (token) {
     if (/^[0-9]{4}$/.test(token)) selection[Number(token)] = true;
   });
   return normalizeSelectedYears(selection);
@@ -1169,6 +1422,7 @@ var copyMessageTimer = null;
 var ui = {
   subtitle: document.getElementById("subtitle"),
   categoryTabs: document.getElementById("categoryTabs"),
+  brandSwitch: document.getElementById("brandSwitch"),
   filterBox: document.getElementById("filterBox"),
   kwSearch: document.getElementById("kwSearch"),
   btnAll: document.getElementById("btnAll"),
@@ -1187,6 +1441,7 @@ function normalizeKeyword(text) {
 }
 
 function setCategoryState(category, selection) {
+  resetBrandState();
   activeCategory = category;
   selectedKeywords = selection || new Uint8Array(category.keywords.length);
   if (!selection) {
@@ -1202,93 +1457,82 @@ function setCategoryState(category, selection) {
 function loadHashState() {
   var fallback = DATA.categories[0];
   var raw;
+  selectedYears = null;
+  setCategoryState(fallback);
+
   try {
     raw = decodeURIComponent(window.location.hash.slice(1)).trim();
-    selectedYears = parseYearsFromHash(raw);
   } catch (e) {
-    selectedYears = null;
-    setCategoryState(fallback);
     return;
   }
 
-  if (!raw) {
-    selectedYears = null;
-    setCategoryState(fallback);
-    return;
-  }
-
-  var match = /^([^/]+)(?:\/sel=([^/]*))?(?:\/y=(.*))?$/.exec(raw);
-  if (!match) {
-    setCategoryState(fallback);
-    return;
-  }
+  var parsed = parseHashSegments(raw);
+  if (!parsed) return;
 
   var category = null;
   for (var i = 0; i < DATA.categories.length; i++) {
-    if (DATA.categories[i].id === match[1]) {
+    if (DATA.categories[i].id === parsed.category) {
       category = DATA.categories[i];
       break;
     }
   }
+  if (!category) return;
 
-  if (!category) {
-    setCategoryState(fallback);
-    return;
-  }
+  var segments = parsed.segments;
+  var selection;
+  if (typeof segments.sel !== "undefined") {
+    var code = segments.sel.trim().toLowerCase();
+    selection = new Uint8Array(category.keywords.length);
+    if (code !== "none") {
+      if (!code) return;
+      var parts = code.split(".");
+      var ranges = [];
+      for (var p = 0; p < parts.length; p++) {
+        var range = /^([0-9a-z]+)(?:\s*-\s*([0-9a-z]+))?$/.exec(parts[p].trim());
+        if (!range) return;
 
-  if (typeof match[2] === "undefined") {
-    setCategoryState(category);
-    return;
-  }
+        var first = parseInt(range[1], 36);
+        var last = range[2] ? parseInt(range[2], 36) : first;
+        if (!isFinite(first) || !isFinite(last) || first < 0 || last < first ||
+            first > 9007199254740991 || last > 9007199254740991) {
+          return;
+        }
+        ranges.push([first, last]);
+      }
 
-  var code = match[2].trim().toLowerCase();
-  var selection = new Uint8Array(category.keywords.length);
-  if (code === "none") {
-    setCategoryState(category, selection);
-    return;
-  }
-
-  if (!code) {
-    setCategoryState(fallback);
-    return;
-  }
-
-  var parts = code.split(".");
-  var ranges = [];
-  for (var p = 0; p < parts.length; p++) {
-    var range = /^([0-9a-z]+)(?:\s*-\s*([0-9a-z]+))?$/.exec(parts[p].trim());
-    if (!range) {
-      setCategoryState(fallback);
-      return;
+      // Hash obsahuje stabilní ID KW; neznámá ID se tiše ignorují.
+      var knownCount = 0;
+      for (var k = 0; k < category.keywords.length; k++) {
+        var kid = category.keywords[k].id;
+        for (var r = 0; r < ranges.length; r++) {
+          if (kid >= ranges[r][0] && kid <= ranges[r][1]) {
+            selection[k] = 1;
+            knownCount++;
+            break;
+          }
+        }
+      }
+      if (!knownCount) return;
     }
-
-    var first = parseInt(range[1], 36);
-    var last = range[2] ? parseInt(range[2], 36) : first;
-    if (!isFinite(first) || !isFinite(last) || first < 0 || last < first ||
-        first > 9007199254740991 || last > 9007199254740991) {
-      setCategoryState(fallback);
-      return;
-    }
-    ranges.push([first, last]);
   }
 
-  // Hash obsahuje stabilní ID KW; neznámá ID se tiše ignorují
-  var knownCount = 0;
-  for (var k = 0; k < category.keywords.length; k++) {
-    var kid = category.keywords[k].id;
-    for (var r = 0; r < ranges.length; r++) {
-      if (kid >= ranges[r][0] && kid <= ranges[r][1]) {
-        selection[k] = 1;
-        knownCount++;
-        break;
+  setCategoryState(category, selection);
+  selectedYears = parseYearsFromHash(raw);
+
+  if (category.id === "brand") {
+    if (typeof segments.l !== "undefined") {
+      var lines = { topgrily: false, flamaro: false, all: false };
+      segments.l.split(".").forEach(function (token) {
+        if (brandLineKeys.indexOf(token) !== -1) lines[token] = true;
+      });
+      if (brandLineKeys.some(function (key) { return lines[key]; })) {
+        selectedBrandLines = lines;
       }
     }
+    if (segments.s === "topgrily" || segments.s === "flamaro") {
+      seasonalBrand = segments.s;
+    }
   }
-  if (!knownCount) {
-    setCategoryState(fallback);
-    return;
-  }
-  setCategoryState(category, selection);
 }
 
 function selectionHash() {
@@ -1306,6 +1550,15 @@ function selectionHash() {
         return selectedYears[year];
       }).join(".")
     : "";
+  if (activeCategory.id === "brand") {
+    var lines = brandLineKeys.filter(function (key) {
+      return selectedBrandLines[key];
+    });
+    if (lines.length && lines.length !== brandLineKeys.length) {
+      yearSuffix += "/l=" + lines.join(".");
+    }
+    if (seasonalBrand !== "all") yearSuffix += "/s=" + seasonalBrand;
+  }
   if (ids.length === activeCategory.keywords.length) {
     return base + yearSuffix;
   }
@@ -1404,6 +1657,7 @@ function calculateAggregate() {
       last12: keywordLast12,
       yoy: safeYoy(keywordLast12, keywordPrev12),
       same: keyword.same,
+      brand: keyword.brand,
       foreign: !!keyword.foreign,
       counted: counted
     });
@@ -1447,6 +1701,7 @@ function refreshSelection(syncCheckboxes) {
 
   var aggregate = calculateAggregate();
   replaceSelectionHash();
+  renderBrandSwitch();
   renderSelectionInfo(aggregate);
   renderViews(activeCategory, aggregate);
 }
@@ -1454,6 +1709,7 @@ function refreshSelection(syncCheckboxes) {
 function renderCategoryTabs() {
   var html = [];
   ui.categoryTabs.setAttribute("role", "tablist");
+  ui.categoryTabs.hidden = DATA.categories.length < 2;
 
   for (var i = 0; i < DATA.categories.length; i++) {
     var category = DATA.categories[i];
@@ -1505,6 +1761,9 @@ function renderKeywordList() {
       '<span class="avg">' + escapeHtml(String(fmtNum(keyword.avg))) + "</span>"
     );
 
+    if (activeCategory.id === "brand") {
+      html.push(brandTag(keyword.brand));
+    }
     if (keyword.same != null) {
       html.push(
         '<span class="tag">stejná řada jako ' +
@@ -1525,6 +1784,7 @@ function renderKeywordList() {
 
 function renderAll() {
   renderCategoryTabs();
+  renderBrandSwitch();
   renderSubtitle();
   fillPeriodTexts(DATA);
   renderKeywordList();
@@ -1641,6 +1901,23 @@ ui.categoryTabs.addEventListener("click", function (event) {
   var activeTab = ui.categoryTabs.querySelector('[aria-selected="true"]');
   if (activeTab) {
     activeTab.focus();
+  }
+});
+
+ui.brandSwitch.addEventListener("click", function (event) {
+  if (activeCategory.id !== "brand") return;
+  var button = event.target;
+  while (button && button !== ui.brandSwitch) {
+    if (button.nodeType === 1 && button.hasAttribute("data-brand-view")) {
+      var brand = button.getAttribute("data-brand-view");
+      for (var i = 0; i < activeCategory.keywords.length; i++) {
+        selectedKeywords[i] =
+          brand === "all" || activeCategory.keywords[i].brand === brand ? 1 : 0;
+      }
+      refreshSelection(true);
+      return;
+    }
+    button = button.parentNode;
   }
 });
 
