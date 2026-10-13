@@ -1078,8 +1078,10 @@ function renderViews(cat, agg) {
   }));
 
   var seasonalTooltip = tooltipOptions(true);
-  seasonalTooltip.callbacks.title = function (items) {
-    return items.length ? MONTH_NAMES[items[0].dataIndex] : '';
+  seasonalTooltip.callbacks.title = function () { return ''; };
+  seasonalTooltip.callbacks.label = function (context) {
+    return ' ' + MONTH_NAMES[context.dataIndex] + ' ' + context.dataset.label +
+      ': ' + numberText(context.parsed.y);
   };
 
   seasonalChart = new Chart(document.getElementById(seasonalId), {
