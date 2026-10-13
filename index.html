@@ -281,6 +281,17 @@ table.heatmap th.yr-label{white-space:nowrap}
 .kw-item{flex-wrap:wrap}
 .kw-item .kwtext{flex:1 1 0}
 .kw-item .tag{flex:0 0 100%;margin-left:24px;width:auto}
+.seasonal-card{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+.chart-wrap.tall{position:relative;height:460px;width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+.chart-wrap.tall canvas{max-width:100%}
+.year-filter{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0;margin:0 0 16px}
+.year-filter .year-chip{display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;min-height:36px;min-width:0;max-width:100%;box-sizing:border-box;padding:7px 12px;border:1px solid #9ca3af;border-radius:18px;background:#fff;color:#083027;font:inherit;font-size:13px;line-height:1.4;white-space:normal;cursor:pointer}
+.year-filter .year-chip[aria-pressed="true"]{background:#083027;border-color:#083027;color:#fff}
+.year-filter .year-chip:focus-visible{outline:3px solid #f97316;outline-offset:3px}
+.year-filter .year-chip small{color:inherit;font-size:11px;line-height:1.4}
+.year-chip-dot{display:inline-block;flex:0 0 10px;width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 1px #fff,0 0 0 2px #64748b}
+.two-col.solo{grid-template-columns:minmax(0,1fr)}
+@media(max-width:640px){.chart-wrap.tall{height:340px}}
 
 </style>
 </head>
@@ -561,9 +572,12 @@ var charts = [];
 
 var kwSort = { key: 'last12', dir: -1 };
 var viewRenderSerial = 0;
+var seasonalChart = null;
 
 function renderViews(cat, agg) {
   destroyCharts();
+  seasonalChart = null;
+  selectedYears = normalizeSelectedYears(selectedYears);
 
   var views = document.getElementById('views');
   if (!views) return;
@@ -715,8 +729,116 @@ function renderViews(cat, agg) {
       '>' + html(column.label) + '</th>';
   }).join('');
 
-  var seasonalTitle = 'Sezónnost podle roku (osa: měsíc 1 až 12)';
+  var seasonalTitle = 'Sezónnost podle roku';
   if (partialYears.length) seasonalTitle += ' · ' + incompleteYearsText(partialYears);
+
+  // Barvy let v grafu sezónnosti: zelené a oranžové odstíny Mairy, bez modré, dobře rozlišitelné
+  var SEASON_COLORS = ['#9bb5ac', '#4f8a78', '#f9856b', '#083027', '#ff4a21'];
+  function seasonalColor(index, total) {
+    return total <= SEASON_COLORS.length
+      ? SEASON_COLORS[SEASON_COLORS.length - total + index]
+      : yearColor(index, total);
+  }
+
+  var seasonalFilterId = seasonalId + '-years';
+  var availableMonths = groupByYear(agg.months, agg.months.map(function () {
+    return 1;
+  }));
+
+  function seasonalYearSelected(year) {
+    return selectedYears === null || !!selectedYears[Number(year)];
+  }
+
+  function seasonalYearNote(year) {
+    if (!partialSet.has(String(year))) return '';
+    var months = availableMonths[String(year)] || [];
+    var first = -1;
+    var last = -1;
+    for (var month = 0; month < 12; month++) {
+      if (months[month] === 1) {
+        if (first === -1) first = month;
+        last = month;
+      }
+    }
+    if (first === -1) return '';
+    return ' <small>' + html('jen ' + MONTH_ABBR[first].toLowerCase() +
+      (first === last ? '' : ' až ' + MONTH_ABBR[last].toLowerCase())) + '</small>';
+  }
+
+  var seasonalChips =
+    '<button type="button" class="year-chip" aria-pressed="' +
+    (selectedYears === null ? 'true' : 'false') +
+    '" data-year="all">Všechny roky</button>' +
+    years.map(function (year, index) {
+      return '<button type="button" class="year-chip" aria-pressed="' +
+        (seasonalYearSelected(year) ? 'true' : 'false') +
+        '" data-year="' + html(year) + '">' +
+        '<span class="year-chip-dot" aria-hidden="true" style="background-color:' +
+        html(seasonalColor(index, years.length)) + '"></span>' +
+        html(year) + seasonalYearNote(year) + '</button>';
+    }).join('');
+
+  function seasonalDatasets() {
+    return years.map(function (year, index) {
+      var color = seasonalColor(index, years.length);
+      return {
+        label: year,
+        data: MONTH_ABBR.map(function (_, monthIndex) {
+          var value = yearValues(year)[monthIndex];
+          return hasValue(value) ? value : null;
+        }),
+        borderColor: color, backgroundColor: color, borderWidth: 2.5,
+        fill: false, tension: 0.3,
+        pointRadius: 3, pointHoverRadius: 6, spanGaps: true
+      };
+    }).filter(function (dataset) {
+      return seasonalYearSelected(dataset.label);
+    });
+  }
+
+  function updateSeasonalSelection() {
+    var filter = document.getElementById(seasonalFilterId);
+    if (filter) {
+      var buttons = filter.querySelectorAll('button[data-year]');
+      for (var i = 0; i < buttons.length; i++) {
+        var year = buttons[i].getAttribute('data-year');
+        buttons[i].setAttribute('aria-pressed',
+          (year === 'all' ? selectedYears === null : seasonalYearSelected(year))
+            ? 'true' : 'false');
+      }
+    }
+    if (seasonalChart) {
+      seasonalChart.data.datasets = seasonalDatasets();
+      seasonalChart.update();
+    }
+    replaceSelectionHash();
+  }
+
+  function toggleSeasonalYear(year) {
+    if (year === 'all') {
+      selectedYears = null;
+    } else {
+      var numericYear = Number(year);
+      var allYears = availableYears();
+      if (allYears.indexOf(numericYear) === -1) return;
+      var next = {};
+      var count = 0;
+      allYears.forEach(function (item) {
+        if (seasonalYearSelected(item)) {
+          next[item] = true;
+          count++;
+        }
+      });
+      if (next[numericYear]) {
+        if (count === 1) return;
+        delete next[numericYear];
+      } else {
+        next[numericYear] = true;
+      }
+      selectedYears = normalizeSelectedYears(next);
+    }
+    updateSeasonalSelection();
+  }
 
   var countedNote = agg.countedCount !== agg.selectedCount
     ? '<small>Do součtů se počítá ' + html(kwCount(agg.countedCount)) + '.</small>'
@@ -740,16 +862,18 @@ function renderViews(cat, agg) {
         (countedNote ? '<div>' + countedNote + '</div>' : '') +
       '</div>' +
     '</div>' +
-    '<div class="two-col">' +
+    '<div class="two-col solo">' +
       '<section class="card"><h2>Měsíční hledanost (celé období)</h2>' +
         '<div class="chart-wrap"><canvas id="' + monthlyId +
         '" role="img" aria-label="' + html('Měsíční hledanost za celé období: ' + cat.name) +
         '"></canvas></div></section>' +
-      '<section class="card"><h2>' + html(seasonalTitle) + '</h2>' +
-        '<div class="chart-wrap"><canvas id="' + seasonalId +
-        '" role="img" aria-label="' + html('Sezónnost podle roku, měsíce 1 až 12: ' + cat.name) +
-        '"></canvas></div></section>' +
     '</div>' +
+    '<section class="card seasonal-card"><h2>' + html(seasonalTitle) + '</h2>' +
+      '<div class="year-filter" id="' + seasonalFilterId +
+      '" role="group" aria-label="Roky v grafu sezónnosti">' + seasonalChips + '</div>' +
+      '<div class="chart-wrap tall"><canvas id="' + seasonalId +
+      '" role="img" aria-label="Sezónnost podle roku, měsíce leden až prosinec">' +
+      '</canvas></div></section>' +
     '<section class="card"><h2>Hledanost po měsících (součet za rok)</h2>' +
       '<div class="tbl-scroll"><table class="ym">' +
         '<caption class="sr-only">Měsíční hledanost a součty podle roku</caption>' +
@@ -853,6 +977,19 @@ function renderViews(cat, agg) {
 
   renderKeywordRows();
 
+  var seasonalFilter = document.getElementById(seasonalFilterId);
+  seasonalFilter.addEventListener('click', function (event) {
+    var button = event.target;
+    while (button && button !== seasonalFilter) {
+      if (button.nodeType === 1 && button.tagName === 'BUTTON' &&
+          button.hasAttribute('data-year')) {
+        toggleSeasonalYear(button.getAttribute('data-year'));
+        return;
+      }
+      button = button.parentNode;
+    }
+  });
+
   if (typeof Chart === 'undefined') {
     [monthlyId, seasonalId].forEach(function (id) {
       var canvas = document.getElementById(id);
@@ -940,78 +1077,87 @@ function renderViews(cat, agg) {
     }
   }));
 
-  charts.push(new Chart(document.getElementById(seasonalId), {
+  var seasonalTooltip = tooltipOptions(true);
+  seasonalTooltip.callbacks.title = function (items) {
+    return items.length ? MONTH_NAMES[items[0].dataIndex] : '';
+  };
+
+  seasonalChart = new Chart(document.getElementById(seasonalId), {
     type: 'line',
     data: {
-      labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      datasets: years.map(function (year, index) {
-        var color = yearColor(index, years.length);
-        return {
-          label: year,
-          data: MONTH_ABBR.map(function (_, monthIndex) {
-            var value = yearValues(year)[monthIndex];
-            return hasValue(value) ? value : null;
-          }),
-          borderColor: color,
-          backgroundColor: color,
-          borderWidth: 2,
-          fill: false,
-          tension: 0.3,
-          pointRadius: 0,
-          pointHoverRadius: 5,
-          spanGaps: true
-        };
-      })
+      labels: MONTH_ABBR.map(function (month) {
+        return month.toLowerCase();
+      }),
+      datasets: seasonalDatasets()
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
           position: 'bottom',
+          onClick: function (event, item) {
+            toggleSeasonalYear(item.text);
+          },
           labels: {
-            color: C_INK,
-            font: { family: FONT },
-            boxWidth: 18,
-            boxHeight: 3,
-            padding: 12,
+            color: C_INK, font: { family: FONT, size: 13 },
+            usePointStyle: false, boxWidth: 22, boxHeight: 3, padding: 16,
             generateLabels: function (chart) {
               var base = Chart.defaults.plugins.legend.labels.generateLabels(chart);
-              base.forEach(function (label) {
-                label.fillStyle = label.strokeStyle;
-                label.lineWidth = 0;
-              });
+              base.forEach(function (label) { label.fillStyle = label.strokeStyle; label.lineWidth = 0; });
               return base;
             }
           }
         },
-        tooltip: tooltipOptions(true)
+        tooltip: seasonalTooltip
       },
       scales: {
         y: yAxis(),
         x: {
-          grid: { display: false },
-          border: { display: false },
-          ticks: {
-            color: C_INK2,
-            font: { family: FONT },
-            autoSkip: false
-          },
-          title: {
-            display: true,
-            text: 'Měsíc (1 až 12)',
-            color: C_INK2,
-            font: { family: FONT }
-          }
+          grid: { display: false }, border: { display: false },
+          ticks: { color: C_INK2, font: { family: FONT }, autoSkip: false }
         }
       }
     }
-  }));
+  });
+  charts.push(seasonalChart);
 }
 
 var activeCategory = DATA.categories[0];
 var selectedKeywords;
+var selectedYears = null;
+
+function availableYears() {
+  return Object.keys(groupByYear(DATA.months, DATA.months.map(function () {
+    return 1;
+  }))).map(Number).sort(function (a, b) {
+    return a - b;
+  });
+}
+
+function normalizeSelectedYears(selection) {
+  if (!selection) return null;
+  var years = availableYears();
+  var normalized = {};
+  var count = 0;
+  years.forEach(function (year) {
+    if (Object.prototype.hasOwnProperty.call(selection, year) && selection[year]) {
+      normalized[year] = true;
+      count++;
+    }
+  });
+  return !count || count === years.length ? null : normalized;
+}
+
+function parseYearsFromHash(raw) {
+  var match = /^([^/]+)(?:\/sel=([^/]*))?(?:\/y=(.*))?$/.exec(raw);
+  if (!match || typeof match[3] === "undefined") return null;
+  var selection = {};
+  match[3].split(".").forEach(function (token) {
+    if (/^[0-9]{4}$/.test(token)) selection[Number(token)] = true;
+  });
+  return normalizeSelectedYears(selection);
+}
 var searchText = "";
 var searchKeys = [];
 var keywordCheckboxes = [];
@@ -1056,17 +1202,20 @@ function loadHashState() {
   var raw;
   try {
     raw = decodeURIComponent(window.location.hash.slice(1)).trim();
+    selectedYears = parseYearsFromHash(raw);
   } catch (e) {
+    selectedYears = null;
     setCategoryState(fallback);
     return;
   }
 
   if (!raw) {
+    selectedYears = null;
     setCategoryState(fallback);
     return;
   }
 
-  var match = /^([^/]+)(?:\/sel=(.*))?$/.exec(raw);
+  var match = /^([^/]+)(?:\/sel=([^/]*))?(?:\/y=(.*))?$/.exec(raw);
   if (!match) {
     setCategoryState(fallback);
     return;
@@ -1149,11 +1298,17 @@ function selectionHash() {
   }
 
   var base = "#" + encodeURIComponent(activeCategory.id);
+  selectedYears = normalizeSelectedYears(selectedYears);
+  var yearSuffix = selectedYears
+    ? "/y=" + availableYears().filter(function (year) {
+        return selectedYears[year];
+      }).join(".")
+    : "";
   if (ids.length === activeCategory.keywords.length) {
-    return base;
+    return base + yearSuffix;
   }
   if (!ids.length) {
-    return base + "/sel=none";
+    return base + "/sel=none" + yearSuffix;
   }
 
   ids.sort(function (a, b) { return a - b; });
@@ -1171,7 +1326,7 @@ function selectionHash() {
       : first.toString(36) + "-" + last.toString(36));
     j++;
   }
-  return base + "/sel=" + ranges.join(".");
+  return base + "/sel=" + ranges.join(".") + yearSuffix;
 }
 
 function replaceSelectionHash() {
