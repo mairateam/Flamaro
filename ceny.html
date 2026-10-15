@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flamaro: ceny grilů Weber proti konkurenci</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+
+  /* Vzhled podle brand manuálu Maira (MAIRA_BRAND.md). Žádná modrá, ostré hrany,
+     písmo Inter. Barvy a písmo se mění jen tady. */
+  :root{
+    --orange:#ff4a21;               /* Power Orange: akcent */
+    --orange-dark:#e63e18;          /* hover, záporné štítky */
+    --green:#083027;                /* Money Green: header, footer, hlavní tmavá */
+    --white:#ffffff;                /* Snow White */
+    --grey:#e6e6e6;                 /* Urban Grey: rámečky, sekundární pozadí */
+    --ink:#32373c;                  /* Dark Grey: text */
+    --ink-2:rgba(50,55,60,.72);     /* sekundární text (Dark Grey, 72 %) */
+    --muted:#abb8c3;
+    --pos-bg:#e4efe9;
+    --neg-bg:#ffe9e3;
+    --shadow-sm:0 2px 8px rgba(0,0,0,.08);
+    --font:'Inter','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+
+  body{
+    font-family:var(--font);
+    background:var(--white);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* Header: Money Green, vlevo logo MAIRA, vpravo název přehledu */
+  .site-header{ background:var(--green); color:var(--white); }
+  .header-inner{
+    max-width:1180px; margin:0 auto; padding:16px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px 24px; flex-wrap:wrap;
+  }
+  .logo-maira{ height:28px; width:auto; display:block; overflow:visible; }
+  .header-title{ text-align:right; }
+  .header-name{ font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+  .header-sub{ font-size:12px; color:rgba(255,255,255,.7); margin-top:2px; }
+
+  main{ max-width:1180px; margin:0 auto; padding:32px 24px 48px; }
+
+  .title-row{ display:flex; align-items:center; gap:16px; margin-bottom:10px; }
+  /* Dekorativní oranžové pruhy z brandu, použité jen jednou u nadpisu */
+  .stripes{
+    flex:none; width:48px; height:40px;
+    background:repeating-linear-gradient(0deg,#ff4a21 0,#ff4a21 4px,transparent 4px,transparent 12px);
+  }
+  h1{
+    font-size:clamp(24px,3.4vw,36px); font-weight:900; line-height:1.1;
+    letter-spacing:-.02em; text-transform:uppercase; color:var(--green);
+  }
+  .subtitle{ font-size:13px; color:var(--ink-2); margin-bottom:22px; line-height:1.6; }
+  .subtitle strong{ color:var(--ink); font-weight:600; }
+
+  details.methodology{
+    background:var(--white); border:1px solid var(--grey); box-shadow:var(--shadow-sm);
+    padding:4px 18px; margin-bottom:26px; font-size:13px;
+  }
+  details.methodology summary{
+    cursor:pointer; padding:12px 0; color:var(--green); list-style:none;
+    display:flex; align-items:center; gap:10px;
+    font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+  }
+  details.methodology summary::-webkit-details-marker{ display:none; }
+  details.methodology summary::before{ content:'▸'; font-size:14px; color:var(--orange); }
+  details.methodology[open] summary::before{ content:'▾'; }
+  details.methodology summary:focus-visible{ outline:2px solid var(--orange); outline-offset:2px; }
+  .methodology-body{ padding:4px 0 18px; line-height:1.7; color:var(--ink); }
+  .methodology-body h3{
+    font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--green); margin:16px 0 4px;
+  }
+  .methodology-body h3:first-child{ margin-top:0; }
+  .methodology-body ul{ padding-left:18px; margin:4px 0; }
+
+  /* Záložky: hranaté, aktivní země = Money Green, aktivní kategorie = Power Orange */
+  .tabs{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .tabs.tabs-country{ margin-bottom:12px; }
+  .tab-btn{
+    font-family:inherit; font-size:13px; font-weight:700; line-height:1.2;
+    text-transform:uppercase; letter-spacing:.05em;
+    padding:11px 18px; background:var(--white); color:var(--ink);
+    border:2px solid var(--grey); border-radius:0; cursor:pointer;
+    transition:background-color .2s ease, border-color .2s ease, color .2s ease;
+  }
+  .tab-btn:hover{ border-color:var(--orange); }
+  .tab-btn:focus-visible{ outline:2px solid var(--orange); outline-offset:2px; }
+  .tabs-country .tab-btn.active{ background:var(--green); border-color:var(--green); color:var(--white); }
+  .tabs-category .tab-btn{ font-size:12px; padding:9px 14px; }
+  .tabs-category .tab-btn.active{ background:var(--orange); border-color:var(--orange); color:var(--white); }
+
+  #content{ margin-top:20px; }
+
+  .cat-block{ margin-bottom:36px; }
+  .cat-block + .cat-block{ padding-top:28px; border-top:2px solid var(--grey); }
+  .cat-head{ display:flex; align-items:baseline; gap:4px 14px; margin-bottom:14px; flex-wrap:wrap; }
+  .cat-head h2{
+    font-size:20px; font-weight:800; letter-spacing:-.02em; text-transform:uppercase; color:var(--green);
+  }
+  .cat-sub{ font-size:13px; color:var(--ink-2); }
+  .cat-sub .loc{ color:var(--ink); font-weight:600; }
+
+  .note-empty{
+    background:var(--white); border:1px dashed var(--muted); padding:22px;
+    color:var(--ink-2); font-size:13.5px; text-align:center;
+  }
+
+  /* KPI dlaždice: bílé hranaté karty s 4px oranžovým horním okrajem */
+  .kpi-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px; }
+  .kpi-card{
+    background:var(--white); border:1px solid var(--grey); border-top:4px solid var(--orange);
+    box-shadow:var(--shadow-sm); padding:16px 18px 18px; min-width:0;
+  }
+  .kpi-label{
+    font-size:11px; font-weight:700; color:var(--ink-2); line-height:1.3;
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;
+  }
+  .kpi-value{ font-size:28px; font-weight:800; color:var(--green); line-height:1.1; letter-spacing:-.02em; }
+  .kpi-value.pos{ color:var(--green); }
+  .kpi-value.neg{ color:var(--orange); }
+  .kpi-value.small{ font-size:20px; line-height:1.35; }
+
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
+  .two-col > .card{ min-width:0; margin-bottom:0; }
+
+  .card{
+    background:var(--white); border:1px solid var(--grey); box-shadow:var(--shadow-sm);
+    padding:22px 24px; margin-bottom:20px;
+  }
+  .card-title{
+    font-size:12px; font-weight:700; color:var(--ink-2); line-height:1.4;
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom:14px;
+  }
+  .chart-wrap{ position:relative; height:300px; }
+
+  /* Tabulka klíčových slov */
+  .kws-wrap{ max-height:420px; overflow:auto; border:1px solid var(--grey); }
+  .kws-wrap table{ width:100%; border-collapse:collapse; font-size:13px; }
+  .kws-wrap thead th{
+    position:sticky; top:0; z-index:1;
+    text-align:left; padding:10px 12px; background:var(--grey); color:var(--ink);
+    font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    white-space:nowrap; cursor:pointer; user-select:none;
+  }
+  .kws-wrap thead th:hover{ color:var(--green); }
+  .kws-wrap thead th:focus-visible{ outline:2px solid var(--orange); outline-offset:-2px; }
+  .kws-wrap thead th .arrow{ font-size:10px; color:var(--orange); margin-left:4px; }
+  .kws-wrap th.num, .kws-wrap td.num{ text-align:right; font-variant-numeric:tabular-nums; }
+  .kws-wrap tbody td{ padding:9px 12px; border-bottom:1px solid var(--grey); vertical-align:middle; }
+  .kws-wrap tbody tr:last-child td{ border-bottom:none; }
+  .kws-wrap tbody tr:hover td{ background:#f7f7f7; }
+
+  /* Štítky meziroční změny, malé zaoblení povoleno do 4 px */
+  .badge{ display:inline-block; padding:2px 8px; border-radius:2px; font-size:11.5px; font-weight:700; }
+  .badge.pos{ background:var(--pos-bg); color:var(--green); }
+  .badge.neg{ background:var(--neg-bg); color:var(--orange-dark); }
+  .badge.zero{ background:var(--grey); color:var(--ink); }
+
+  /* Heatmapa: tabulka musí mít width:auto a buňky nowrap, jinak se čísla lámou na 2 řádky */
+  .heatmap-scroll{ overflow-x:auto; }
+  table.heatmap{ border-collapse:separate; border-spacing:3px; font-size:11.5px; width:auto; }
+  table.heatmap th{
+    background:transparent; border:none; color:var(--ink-2); font-weight:700; text-align:center;
+    padding:2px 4px; font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+  }
+  table.heatmap th.yr-label{ text-align:right; padding-right:8px; color:var(--ink); letter-spacing:0; }
+  table.heatmap td{
+    width:50px; height:32px; text-align:center; border-radius:0; font-weight:600; font-size:11px;
+    border:none; padding:0 5px; white-space:nowrap; font-variant-numeric:tabular-nums;
+  }
+  table.heatmap td.empty{ background:#f7f7f7; color:var(--muted); }
+
+  /* Footer: Money Green, bílý text 70 %, odkaz oranžový */
+  .site-footer{ background:var(--green); color:rgba(255,255,255,.7); margin-top:8px; }
+  .footer-inner{ max-width:1180px; margin:0 auto; padding:28px 24px 24px; font-size:12.5px; line-height:1.8; }
+  .footer-note{ max-width:920px; margin-bottom:20px; }
+  .footer-bottom{
+    display:flex; align-items:center; justify-content:space-between; gap:12px 24px; flex-wrap:wrap;
+    padding-top:16px; border-top:1px solid rgba(255,255,255,.18);
+  }
+  .footer-brand{ display:flex; align-items:center; gap:12px; }
+  .footer-brand .logo-maira{ height:16px; }
+  .site-footer a{ color:var(--orange); text-decoration:none; font-weight:700; }
+  .site-footer a:hover{ text-decoration:underline; }
+  .site-footer a:focus-visible{ outline:2px solid var(--orange); outline-offset:2px; }
+
+  @media (max-width:800px){ .two-col{ grid-template-columns:1fr; } }
+  @media (max-width:760px){ .kpi-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:640px){
+    .header-inner{ padding:14px 16px; }
+    .logo-maira{ height:22px; }
+    .header-name{ font-size:12px; }
+    .header-sub{ font-size:11px; }
+    main{ padding:24px 16px 40px; }
+    .stripes{ width:28px; height:28px; }
+    .title-row{ gap:12px; }
+    .card{ padding:16px; }
+    .chart-wrap{ height:260px; }
+    .kpi-value{ font-size:22px; }
+    .kpi-value.small{ font-size:17px; }
+    .tab-btn{ flex:1 1 auto; text-align:center; }
+    .tabs-category .tab-btn{ padding:9px 10px; }
+    .footer-inner{ padding:24px 16px 20px; }
+  }
+
+/* ---- stránka Ceny ---- */
+.report-nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}
+.report-nav a{display:inline-block;padding:8px 14px;border:2px solid rgba(255,255,255,.35);color:var(--white);font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;text-decoration:none}
+.report-nav a:hover,.report-nav a:focus-visible{border-color:var(--orange);outline:none}
+.report-nav a[aria-current="page"]{background:var(--orange);border-color:var(--orange)}
+@media(max-width:500px){.report-nav{flex:1 1 100%}.report-nav a{flex:1 1 0;text-align:center}}
+main,.card,.kpi-card,.tbl-scroll{min-width:0}
+.status{padding:22px;border:1px dashed var(--muted);color:var(--ink-2);font-size:14px;text-align:center;margin-bottom:24px}
+.status.error{border-color:var(--orange);color:var(--orange-dark);background:var(--neg-bg);text-align:left}
+.status[hidden]{display:none}
+.sample-banner{background:#fff4e5;border:1px solid #f0c987;color:#6b4a0b;padding:10px 14px;font-size:13px;margin-bottom:20px}
+.sample-banner[hidden]{display:none}
+.sec-title{font-size:20px;font-weight:800;letter-spacing:-.02em;text-transform:uppercase;color:var(--green);margin:36px 0 14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.sec-title small{font-size:13px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-2)}
+.kpi-grid.five{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.kpi-card.pos-nejlevnejsi{border-top-color:var(--green)}
+.kpi-card.pos-shoda{border-top-color:#4f8a78}
+.kpi-card.pos-do2{border-top-color:var(--muted)}
+.kpi-card.pos-od2do5{border-top-color:#f9856b}
+.kpi-card.pos-nad5{border-top-color:var(--orange-dark)}
+.kpi-card.pos-bez{border-top-color:var(--grey)}
+button.kpi-card{font:inherit;text-align:left;cursor:pointer;color:inherit;width:100%}
+button.kpi-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.16)}
+button.kpi-card:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+button.kpi-card[aria-pressed="true"]{background:#f7f7f7;box-shadow:inset 0 0 0 2px var(--green)}
+.notice{margin:0 0 20px;padding:12px 16px;border-left:4px solid var(--orange);background:#fff;box-shadow:var(--shadow-sm);font-size:13px;line-height:1.6}
+.notice strong{color:var(--green)}
+.notice[hidden]{display:none}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px}
+.filters input[type=search],.filters select{min-height:40px;border:2px solid var(--grey);border-radius:0;background:var(--white);color:var(--ink);font-family:var(--font);font-size:13px;padding:8px 12px;max-width:100%}
+.filters input[type=search]{flex:1 1 240px;min-width:0}
+.filters input:focus-visible,.filters select:focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-color:var(--orange)}
+.filters label.chk{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
+.filters label.chk input{accent-color:var(--orange)}
+.fbtn{min-height:40px;border:2px solid var(--grey);border-radius:0;background:var(--white);color:var(--ink);font-family:var(--font);font-size:13px;padding:8px 12px;font-weight:600;cursor:pointer}
+.fbtn:hover,.fbtn:focus-visible{border-color:var(--orange);outline:none}
+.count-info{font-size:13px;color:var(--ink-2);margin:0 0 8px}
+table.pt{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+table.pt thead th{position:sticky;top:0;background:#e6e6e6;padding:10px 12px;text-align:left;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;cursor:pointer;user-select:none}
+table.pt thead th.nosort{cursor:default}
+table.pt thead th:hover:not(.nosort){color:var(--green)}
+table.pt thead th:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+table.pt th.num,table.pt td.num{text-align:right}
+table.pt thead th .arrow{font-size:10px;color:var(--orange);margin-left:4px}
+table.pt tbody td{padding:9px 12px;border-bottom:1px solid var(--grey);vertical-align:middle}
+table.pt tbody tr.prod:hover td{background:#f7f7f7}
+table.pt td.name{min-width:240px}
+table.pt .toggle{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-weight:600;line-height:1.35}
+table.pt .toggle::before{content:'▸';color:var(--orange);font-size:13px;flex:none}
+table.pt .toggle[aria-expanded="true"]::before{content:'▾'}
+table.pt .toggle:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+table.pt .serie{display:inline-block;margin-left:6px;padding:1px 6px;background:var(--grey);color:var(--ink-2);font-size:11px;font-weight:400}
+table.pt .kdo{max-width:260px;white-space:normal;overflow-wrap:anywhere;color:var(--ink-2)}
+table.pt tr.detail td{background:#fafafa;padding:0 12px 14px 36px}
+table.pt tr.detail[hidden]{display:none}
+table.pt tr.detail table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+table.pt tr.detail th{padding:6px 10px;text-align:left;color:var(--ink-2);font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--grey);white-space:nowrap;cursor:default;position:static;background:transparent}
+table.pt tr.detail td{padding:6px 10px;border-bottom:1px solid #eee;background:transparent}
+table.pt tr.detail td.best{font-weight:800;color:var(--green)}
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.badge.p-nejlevnejsi{background:var(--green);color:#fff}
+.badge.p-shoda{background:var(--pos-bg);color:var(--green)}
+.badge.p-do2{background:var(--grey);color:var(--ink)}
+.badge.p-od2do5{background:var(--neg-bg);color:var(--orange-dark)}
+.badge.p-nad5{background:var(--orange);color:#fff}
+.badge.p-bez{background:#f2f2f2;color:var(--muted)}
+.badge.s-ok{background:var(--pos-bg);color:var(--green)}
+.badge.s-bad{background:var(--neg-bg);color:var(--orange-dark)}
+.badge.s-warn{background:#fff1d6;color:#7a5200}
+.badge.s-off{background:#f2f2f2;color:var(--muted)}
+.diff-pos{color:var(--orange-dark);font-weight:600}
+.diff-neg{color:var(--green);font-weight:600}
+.muted{color:var(--muted)}
+.old{color:var(--muted);text-decoration:line-through;margin-right:4px}
+.tbl-scroll{overflow-x:auto;border:1px solid var(--grey);max-width:100%}
+.tbl-scroll.limit{max-height:640px;overflow:auto}
+.chart-wrap{height:340px}
+@media(max-width:640px){.chart-wrap{height:280px}table.pt td.name{min-width:200px}table.pt tr.detail td{padding-left:12px}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <svg class="logo-maira" viewBox="384.89 417.14 1150.22 176" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MAIRA" focusable="false"><g fill="#f04e2a"><path d="M384.89,417.14h115.25l34.61,87.02,34.73-87.02h114.63v176h-80.76l.37-118.31-45.29,118.31h-53.76l-45.17-118.31.25,118.31h-74.87v-176Z"/><path d="M760.3,417.14h102.85l81,176h-92.05l-7.12-19.88h-67.87l-7,19.88h-90.45l80.63-176ZM830.99,533.86l-20.25-56.95-19.88,56.95h40.13Z"/><path d="M939.82,417.14h86.04v176h-86.04v-176Z"/><path d="M1041.39,417.14h171.09c41.36,0,62.96,21.48,62.96,55.48v1.35c0,24.18-11.66,41.48-34.49,48.23,8.84,4.05,14.11,11.66,18.66,23.93l8.59,23.56c4.54,12.4,8.35,18.41,13.87,22.21v1.23h-93.03c-2.95-4.42-5.4-11.78-7.85-21.85l-2.95-13.62c-2.45-9.7-7.85-13.99-17.92-13.99h-33.14v49.46h-85.79v-176ZM1189.65,486.12v-.98c0-9.57-6.63-16.2-18.41-16.2h-44.06v33.38h44.06c11.78,0,18.41-6.63,18.41-16.2Z"/><path d="M1351.26,417.14h102.85l81,176h-92.05l-7.12-19.88h-67.87l-6.99,19.88h-90.46l80.64-176ZM1421.95,533.86l-20.25-56.95-19.88,56.95h40.13Z"/></g></svg>
+    <nav class="report-nav" aria-label="Přepínání reportů"><a href="index.html">Výkon</a><a href="brand.html">Brand</a><a href="ceny.html" aria-current="page">Ceny</a></nav>
+    <div class="header-title">
+      <div class="header-name">FLAMARO · Ceny grilů Weber</div>
+      <div class="header-sub">Srovnání s konkurencí</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="title-row">
+    <span class="stripes" aria-hidden="true"></span>
+    <h1>Flamaro: ceny grilů Weber proti konkurenci</h1>
+  </div>
+  <p class="subtitle" id="subtitle">Načítám data…</p>
+
+  <div class="sample-banner" id="sampleBanner" hidden>Zobrazen vzorek dat (test/sample-doget.json), ne živá data.</div>
+  <div class="status" id="status" role="status" aria-live="polite">Načítám data…</div>
+
+  <details class="methodology" id="metodika">
+    <summary>Metodika (klikněte pro rozbalení)</summary>
+    <div class="methodology-body">
+      <h3>Zdroj dat</h3>
+      <p>Naše ceny jsou z výstupního feedu Google Nákupy (cena s DPH, při platné akci akční cena). Ceny konkurentů se jednou denně v noci čtou z veřejných stránek jejich e-shopů. Produkty se párují podle EAN, záložně podle kódu Weber. Varianta se stejným názvem a jiným EAN se nepáruje.</p>
+      <h3>Minimální cena trhu</h3>
+      <p>Počítá se jen z čerstvých nabídek (stažených v posledních <span data-fill="maxage">8</span> dnech), které se podařilo spárovat a ověřit a které jsou skladem nebo bez uvedené dostupnosti. Nabídky bez skladu jsou v rozbalené tabulce vidět, do minima nevstupují.</p>
+      <h3>Rozdíl a pozice</h3>
+      <p>Rozdíl = naše cena minus nejnižší cena trhu. Kladný rozdíl znamená, že jsme dražší. Pozice: nejlevnější (pod trhem), shoda (do 0,5 Kč), do 2 %, 2-5 %, nad 5 % nad minimem trhu.</p>
+      <h3>Karanténa a výpadky</h3>
+      <p>Nabídka s nulovou cenou, jinou měnou než CZK nebo s odchylkou přes <span data-fill="quar">50</span> % od naší ceny jde do karantény a nepočítá se. Výpadek konkurenta znamená, že se z jeho webu načetlo výrazně méně nabídek než minule nebo že web přístup blokuje. Jeho poslední známé ceny zůstávají s datem, po <span data-fill="maxage2">8</span> dnech se přestanou počítat.</p>
+      <h3>Pozor</h3>
+      <p>Americký GRIL (oficiální distribuce Weber) uvádí doporučené ceny, takže spíš určuje referenční cenu než nejnižší cenu na trhu.</p>
+    </div>
+  </details>
+
+  <div id="content" hidden>
+    <h2 class="sec-title">Souhrn <small id="secSumSub"></small></h2>
+    <div class="kpi-grid" id="kpiMain"></div>
+    <div class="notice" id="notice" hidden></div>
+    <div class="kpi-grid five" id="kpiPos" role="group" aria-label="Filtr podle pozice"></div>
+
+    <h2 class="sec-title">Produkty <small>klikněte na produkt pro ceny všech konkurentů</small></h2>
+    <div class="filters">
+      <input type="search" id="fSearch" placeholder="Hledat gril…" aria-label="Hledat gril">
+      <select id="fRada" aria-label="Filtr podle řady"><option value="">Všechny řady</option></select>
+      <select id="fPoz" aria-label="Filtr podle pozice"><option value="">Všechny pozice</option></select>
+      <label class="chk"><input type="checkbox" id="fCmp"> Jen s porovnáním</label>
+      <button type="button" class="fbtn" id="fReset">Zrušit filtry</button>
+    </div>
+    <p class="count-info" id="countInfo" aria-live="polite"></p>
+    <div class="tbl-scroll"><table class="pt" id="prodTable"></table></div>
+
+    <h2 class="sec-title">Konkurenti</h2>
+    <div class="tbl-scroll"><table class="pt" id="compTable"></table></div>
+
+    <h2 class="sec-title">Změny od minulého snímku <small id="chgSub"></small></h2>
+    <div class="tbl-scroll limit"><table class="pt" id="chgTable"></table></div>
+
+    <h2 class="sec-title">Vývoj pozice v čase <small>posledních 90 dní</small></h2>
+    <div class="card">
+      <div class="card-title">Podíl grilů, kde jsme nejlevnější nebo ve shodě, a medián rozdílu proti minimu trhu</div>
+      <div class="chart-wrap"><canvas id="histChart" role="img" aria-label="Graf vývoje pozice v čase"></canvas></div>
+      <p class="table-note" id="histNote"></p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-note">Data: výstupní feed Flamaro (Mergado) a veřejné stránky e-shopů konkurentů, aktualizace jednou denně. Ceny s DPH v Kč.</p>
+    <div class="footer-bottom">
+      <div class="footer-brand">
+        <svg class="logo-maira logo-maira-white" viewBox="384.89 417.14 1150.22 176" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MAIRA" focusable="false"><g fill="#ffffff"><polygon points="384.89 417.14 500.14 417.14 534.74 504.16 569.48 417.14 684.11 417.14 684.11 593.14 603.35 593.14 603.72 474.82 558.43 593.14 504.68 593.14 459.51 474.82 459.76 593.14 384.89 593.14 384.89 417.14"/><path d="M760.3,417.14h102.85l81,176h-92.05l-7.12-19.88h-67.87l-7,19.88h-90.45l80.63-176ZM830.99,533.86l-20.25-56.95-19.88,56.95h40.13Z"/><rect x="939.82" y="417.14" width="86.04" height="176"/><path d="M1041.39,417.14h171.09c41.36,0,62.96,21.48,62.96,55.48v1.35c0,24.18-11.66,41.48-34.49,48.23,8.84,4.05,14.11,11.66,18.66,23.93l8.59,23.57c4.54,12.4,8.35,18.41,13.87,22.21v1.23h-93.03c-2.95-4.42-5.4-11.78-7.85-21.85l-2.95-13.62c-2.45-9.7-7.85-13.99-17.92-13.99h-33.14v49.46h-85.79v-176ZM1189.65,486.12v-.98c0-9.57-6.63-16.2-18.41-16.2h-44.06v33.38h44.06c11.78,0,18.41-6.63,18.41-16.2"/><path d="M1351.26,417.14h102.85l81,176h-92.05l-7.12-19.88h-67.87l-6.99,19.88h-90.46l80.64-176ZM1421.95,533.86l-20.25-56.95-19.88,56.95h40.14Z"/></g></svg>
+        <span>Zpracovala Maira pro Flamaro</span>
+      </div>
+      <p><a href="#metodika" id="methLink">Metodika</a> · generováno automaticky</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+// Adresa nasazené webové aplikace Apps Scriptu (Nasadit → Webová aplikace → URL končící /exec).
+// Dokud je tady zástupný text, stránka ukáže výzvu k nastavení. Pro lokální test: ceny.html?sample=1
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwcmVrDS-JoR6AW-T5Aim1vz9BBf73AcQfka5EZRzP_-d4LgAX9WplyM_9aqhnnY5f0/exec';
+// Vzorek dat pro lokální test (načítá se jen s ?sample=1, funguje i z file://)
+var SAMPLE_SRC = '../../../../nastroje/pricing-intelligence/test/sample-doget.js';
+
+var charts = [];
+  var MONTH_NAMES = ["leden","únor","březen","duben","květen","červen","červenec","srpen","září","říjen","listopad","prosinec"];
+  var MONTH_ABBR  = ["Led","Úno","Bře","Dub","Kvě","Čvn","Čvc","Srp","Zář","Říj","Lis","Pro"];
+
+  // Barvy grafů (brand Maira, bez modré)
+  var FONT   = "'Inter','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+  var C_GREEN = '#083027';
+  var C_GRID  = '#e6e6e6';
+  var C_INK   = '#32373c';
+  var C_INK2  = 'rgba(50,55,60,.75)';
+
+  if (window.Chart){
+    Chart.defaults.font.family = FONT;
+    Chart.defaults.font.size = 11;
+    Chart.defaults.color = C_INK;
+  }
+  function fmtNum(n){
+    if (typeof n !== "number" || !isFinite(n)) return "-";
+    var s = Math.round(n).toString();
+    var neg = s.charAt(0) === '-';
+    if (neg) s = s.slice(1);
+    s = s.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return (neg ? "-" : "") + s;
+  }
+
+  function fmtPct(n){
+    if (typeof n !== "number" || !isFinite(n)) return "-";
+    var r = Math.round(n * 10) / 10;
+    if (r === 0) r = 0; // normalize -0
+    var sign = r > 0 ? "+" : "";
+    return sign + r.toFixed(1).replace(".", ",") + " %";
+  }
+
+  // České skloňování podle počtu: 1 / 2 až 4 / ostatní
+  function plural(n, one, few, many){
+    var a = Math.abs(n);
+    if (a === 1) return one;
+    if (a >= 2 && a <= 4) return few;
+    return many;
+  }
+  function kwCount(n){ return n + ' ' + plural(n, 'klíčové slovo', 'klíčová slova', 'klíčových slov'); }
+  function monthCount(n){ return n + ' ' + plural(n, 'měsíc', 'měsíce', 'měsíců'); }
+
+  function parseYM(s){
+    var parts = s.split('-');
+    return { y: parseInt(parts[0], 10), m: parseInt(parts[1], 10) };
+  }
+
+  function ymLabel(ym){
+    var p = parseYM(ym);
+    return MONTH_NAMES[p.m - 1] + ' ' + p.y;
+  }
+
+  function groupByYear(months, values){
+    var years = {};
+    for (var i = 0; i < months.length; i++){
+      var p = parseYM(months[i]);
+      if (!years[p.y]) years[p.y] = new Array(12).fill(null);
+      years[p.y][p.m - 1] = values[i];
+    }
+    return years;
+  }
+
+  // Neúplné roky = roky, které nemají v ose všech 12 měsíců
+  function incompleteYears(months){
+    var cnt = {};
+    months.forEach(function(ym){ var y = parseYM(ym).y; cnt[y] = (cnt[y] || 0) + 1; });
+    return Object.keys(cnt).filter(function(y){ return cnt[y] !== 12; }).map(Number).sort();
+  }
+
+  // "2026 je neúplný rok" / "2025 a 2026 jsou neúplné roky" / "2024, 2025 a 2026 jsou neúplné roky"
+  function incompleteYearsText(years){
+    if (!years.length) return '';
+    if (years.length === 1) return years[0] + ' je neúplný rok';
+    return years.slice(0, -1).join(', ') + ' a ' + years[years.length - 1] + ' jsou neúplné roky';
+  }
+
+  function strongestMonthLabel(months, values){
+    var bi = -1, bv = -Infinity;
+    for (var i = 0; i < values.length; i++){
+      var v = values[i] === null ? -Infinity : values[i];
+      if (v > bv){ bv = v; bi = i; }
+    }
+    if (bi < 0) return "-";
+    var label = ymLabel(months[bi]);
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  }
+
+  // ── Barvy ──
+  function mixHex(a, b, f){
+    var out = '#';
+    for (var i = 1; i <= 5; i += 2){
+      var x = parseInt(a.substr(i, 2), 16), y = parseInt(b.substr(i, 2), 16);
+      out += Math.round(x + (y - x) * f).toString(16).padStart(2, '0');
+    }
+    return out;
+  }
+
+  // Ordinální oranžová rampa pro roky (starší = světlejší, nejnovější = nejtmavší), jeden odstín
+  // Power Orange. Ověřeno validátorem dataviz (--ordinal): monotónní světlost, rozestup ΔL >= 0,06,
+  // světlý konec 2,4:1 na bílé. Platí pro 2 až 7 roků, pro víc let se rozestupy zmenšují.
+  var YEAR_RAMP = ["#f9856b", "#ea4c2a", "#bc3516", "#8b250e", "#5d1506"];
+
+  function yearColor(idx, total){
+    if (total <= 1) return YEAR_RAMP[YEAR_RAMP.length - 1];
+    var fi = idx / (total - 1) * (YEAR_RAMP.length - 1);
+    var i0 = Math.floor(fi), i1 = Math.min(YEAR_RAMP.length - 1, i0 + 1);
+    return mixHex(YEAR_RAMP[i0], YEAR_RAMP[i1], fi - i0);
+  }
+
+  // ── OKLCH → sRGB hex (sekvenční rampa heatmapy) ──
+  function oklchToHex(L, C, Hdeg){
+    var h = Hdeg * Math.PI / 180;
+    var a = C * Math.cos(h), b = C * Math.sin(h);
+    var l_ = L + 0.3963377774 * a + 0.2158037573 * b;
+    var m_ = L - 0.1055613458 * a - 0.0638541728 * b;
+    var s_ = L - 0.0894841775 * a - 1.2914855480 * b;
+    var l = Math.pow(l_, 3), m = Math.pow(m_, 3), s = Math.pow(s_, 3);
+    var r  =  4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+    var g  = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+    var bl = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+    function lin2s(c){ c = Math.max(0, Math.min(1, c)); return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1/2.4) - 0.055; }
+    r = lin2s(r); g = lin2s(g); bl = lin2s(bl);
+    function toHex(v){ return Math.round(Math.max(0, Math.min(1, v)) * 255).toString(16).padStart(2, '0'); }
+    return '#' + toHex(r) + toHex(g) + toHex(bl);
+  }
+
+  // Sekvenční zelená rampa: jeden odstín, nejméně = #f1f3f2, přes světle zelenou, nejvíc = Money Green #083027.
+  // Tři uzly v OKLCH [L, C, H], mezi nimi lineární interpolace.
+  var HEAT_STOPS = [
+    [0.9623505698, 0.0025010912, 165.0748591856],
+    [0.66, 0.075, 167],
+    [0.2790004238, 0.0466611448, 174.4210240467]
+  ];
+
+  function heatColor(t){
+    if (t === null || t === undefined || isNaN(t)) return null;
+    t = Math.max(0, Math.min(1, t));
+    var seg = t < 0.5 ? 0 : 1;
+    var u = (t - seg * 0.5) / 0.5;
+    var a = HEAT_STOPS[seg], b = HEAT_STOPS[seg + 1];
+    return oklchToHex(a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u);
+  }
+
+  function relLum(hex){
+    var c = [1, 3, 5].map(function(i){
+      var v = parseInt(hex.substr(i, 2), 16) / 255;
+      return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  }
+
+  // Text v buňce heatmapy: bílý na tmavších polích (zhruba od poloviny intenzity), jinak Money Green;
+  // vybírá se ta varianta, která má na dané barvě vyšší kontrast.
+  function heatTextColor(bgHex){
+    var l = relLum(bgHex);
+    var white = 1.05 / (l + 0.05);
+    var dark = (l + 0.05) / (relLum(C_GREEN) + 0.05);
+    return white >= dark ? '#ffffff' : C_GREEN;
+  }
+
+  function destroyCharts(){
+    charts.forEach(function(c){ try { c.destroy(); } catch(e){} });
+    charts = [];
+  }
+
+  // ── Dynamické texty o období (z dat, nic pevně zapsaného) ──
+  function fillPeriodTexts(data){
+    var months = data.months;
+    var n = months.length;
+    var first = months[0], last = months[n - 1];
+    var last12 = n >= 12 ? months.slice(n - 12) : months.slice();
+    var prev12 = n >= 24 ? months.slice(n - 24, n - 12) : [];
+    var inc = incompleteYearsText(incompleteYears(months));
+    var texts = {
+      range: monthCount(n) + ', ' + first + ' až ' + last + ' (poslední dostupný měsíc je ' + ymLabel(last) + ')',
+      start: data.history_start || first,
+      incomplete: inc ? inc + '.' : '',
+      yoy_last: last12[0] + ' až ' + last12[last12.length - 1],
+      yoy_prev: prev12.length ? prev12[0] + ' až ' + prev12[prev12.length - 1] : 'méně než 24 měsíců dat, srovnání není k dispozici'
+    };
+    var nodes = document.querySelectorAll('[data-fill]');
+    for (var i = 0; i < nodes.length; i++){
+      var key = nodes[i].getAttribute('data-fill');
+      nodes[i].textContent = texts.hasOwnProperty(key) ? texts[key] : '';
+    }
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+
+var POS = [
+  { key: 'nejlevnejsi', label: 'nejlevnější', cls: 'nejlevnejsi', cnt: 'nejlevnejsi' },
+  { key: 'shoda', label: 'shoda', cls: 'shoda', cnt: 'shoda' },
+  { key: 'do 2 %', label: 'do 2 %', cls: 'do2', cnt: 'do2' },
+  { key: '2-5 %', label: '2-5 %', cls: 'od2do5', cnt: 'od2do5' },
+  { key: 'nad 5 %', label: 'nad 5 %', cls: 'nad5', cnt: 'nad5' }
+];
+var POS_BY_LABEL = {};
+POS.forEach(function(p){ POS_BY_LABEL[p.label] = p; });
+
+var state = {
+  data: null,
+  sort: { key: 'rozdil_pct', dir: -1 },
+  filter: { q: '', rada: '', pozice: '', cmp: false },
+  open: {}
+};
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return escapeHtml(s == null ? '' : s); }
+function isNum(v){ return typeof v === 'number' && isFinite(v); }
+function kc(v){ return isNum(v) ? fmtNum(v) + ' Kč' : '<span class="muted">-</span>'; }
+function norm(s){ return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function safeUrl(u){ return /^https?:\/\//i.test(String(u || '')) ? String(u) : '#'; }
+function fmtDate(iso){
+  if (!iso) return '-';
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return '-';
+  try { return d.toLocaleString('cs-CZ', { timeZone: 'Europe/Prague', day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+  catch(e){ return d.toISOString().slice(0, 16).replace('T', ' '); }
+}
+function fmtDay(s){
+  var m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? parseInt(m[3], 10) + '. ' + parseInt(m[2], 10) + '. ' + m[1] : '-';
+}
+function diffCls(v){ return !isNum(v) || v === 0 ? '' : (v > 0 ? 'diff-pos' : 'diff-neg'); }
+function signedKc(v){
+  if (!isNum(v)) return '<span class="muted">-</span>';
+  return '<span class="' + diffCls(v) + '">' + (v > 0 ? '+' : '') + fmtNum(v) + ' Kč</span>';
+}
+function signedPct(v){
+  if (!isNum(v)) return '<span class="muted">-</span>';
+  return '<span class="' + diffCls(v) + '">' + fmtPct(v) + '</span>';
+}
+function posBadge(label){
+  if (!label) return '<span class="badge p-bez">bez srovnání</span>';
+  var p = POS_BY_LABEL[label];
+  return '<span class="badge p-' + (p ? p.cls : 'bez') + '">' + esc(label) + '</span>';
+}
+function availBadge(av){
+  if (!av) return '<span class="muted">neuvedeno</span>';
+  var cls = av === 'skladem' ? 's-ok' : (av === 'není skladem' ? 's-bad' : 's-warn');
+  return '<span class="badge ' + cls + '">' + esc(av) + '</span>';
+}
+
+// ---------- načtení dat ----------
+function showStatus(msg, isError){
+  var s = $('status');
+  s.hidden = !msg;
+  s.className = 'status' + (isError ? ' error' : '');
+  s.textContent = msg || '';
+}
+
+function load(){
+  var params = new URLSearchParams(location.search);
+  if (params.get('sample') === '1'){
+    $('sampleBanner').hidden = false;
+    var sc = document.createElement('script');
+    sc.src = SAMPLE_SRC;
+    sc.onload = function(){ if (window.PI_SAMPLE) start(window.PI_SAMPLE); else showStatus('Vzorek dat se načetl, ale je prázdný.', true); };
+    sc.onerror = function(){ showStatus('Vzorek dat (' + SAMPLE_SRC + ') se nepodařilo načíst. Spusťte node test/run.js, který ho vytvoří.', true); };
+    document.head.appendChild(sc);
+    return;
+  }
+  if (/DOPLNIT_ID_NASAZENI/.test(WEB_APP_URL)){
+    showStatus('Adresa webové aplikace zatím není nastavena. Po nasazení Apps Scriptu vložte její URL do konstanty WEB_APP_URL v tomto souboru. Pro náhled ve vzorových datech otevřete ceny.html?sample=1.', true);
+    $('subtitle').textContent = 'Data zatím nejsou připojena.';
+    return;
+  }
+  fetch(WEB_APP_URL, { cache: 'no-store' })
+    .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(d){
+      if (d && d.error) throw new Error(d.error);
+      start(d);
+    })
+    .catch(function(e){
+      showStatus('Data se nepodařilo načíst (' + (e && e.message ? e.message : 'chyba') + '). Zkuste to prosím za chvíli znovu.', true);
+      $('subtitle').textContent = 'Data nejsou k dispozici.';
+    });
+}
+
+function start(data){
+  if (!data || !Array.isArray(data.produkty)){ showStatus('Odpověď serveru nemá očekávaný tvar.', true); return; }
+  state.data = data;
+  showStatus('');
+  $('content').hidden = false;
+  document.querySelectorAll('[data-fill=maxage],[data-fill=maxage2]').forEach(function(n){ n.textContent = (data.nastaveni && data.nastaveni.max_age_days) || 8; });
+  document.querySelectorAll('[data-fill=quar]').forEach(function(n){ n.textContent = (data.nastaveni && data.nastaveni.quarantine_pct) || 50; });
+  initFilters();
+  renderAll();
+}
+
+// ---------- souhrn ----------
+function renderSummary(){
+  var d = state.data, p = d.produkty;
+  var withCmp = p.filter(function(x){ return x.pozice; }).length;
+  var covS = 0, covZ = 0;
+  p.forEach(function(x){ covS += x.pokryti_s || 0; if (x.pokryti_z > covZ) covZ = x.pokryti_z; });
+  var avgCov = p.length ? covS / p.length : 0;
+  var stamp = d.snimek || d.generated;   // snimek = poslední skutečný přepočet přehledu (generated je jen čas dotazu)
+  $('subtitle').innerHTML = '<strong>Aktualizováno:</strong> ' + esc(fmtDate(stamp)) + ' · ' + esc(p.length + ' ' + plural(p.length, 'produkt', 'produkty', 'produktů')) + ' · ceny s DPH';
+  $('secSumSub').textContent = 'stav k ' + fmtDate(stamp);
+  var cards = [
+    ['Produktů Weber', fmtNum(p.length), 'v našem feedu'],
+    ['S porovnáním', fmtNum(withCmp), 'z ' + fmtNum(p.length) + ' má aspoň jednu ověřenou nabídku'],
+    ['Průměrné pokrytí', avgCov.toFixed(1).replace('.', ','), 'konkurentů na produkt z ' + (covZ || 0) + ' sledovaných'],
+    ['Karanténa', fmtNum(d.karantena_pocet || 0), (d.karantena_pocet ? 'nabídek vypadá chybně a nepočítá se' : 'žádná nabídka v karanténě')]
+  ];
+  $('kpiMain').innerHTML = cards.map(function(c){
+    return '<div class="kpi-card"><div class="kpi-label">' + esc(c[0]) + '</div><div class="kpi-value">' + c[1] + '</div><small>' + esc(c[2]) + '</small></div>';
+  }).join('');
+  var poz = d.pozice_souhrn || {};
+  var html = POS.map(function(pp){
+    var n = poz[pp.cnt] || 0;
+    return '<button type="button" class="kpi-card pos-' + pp.cls + '" data-pos="' + esc(pp.label) + '" aria-pressed="' + (state.filter.pozice === pp.label) + '">' +
+      '<div class="kpi-label">' + esc(pp.label) + '</div><div class="kpi-value">' + fmtNum(n) + '</div><small>' + esc(plural(n, 'produkt', 'produkty', 'produktů')) + '</small></button>';
+  }).join('');
+  html += '<div class="kpi-card pos-bez"><div class="kpi-label">bez srovnání</div><div class="kpi-value">' + fmtNum(poz.bez_srovnani || 0) + '</div><small>žádná čerstvá nabídka</small></div>';
+  $('kpiPos').innerHTML = html;
+  $('kpiPos').querySelectorAll('button[data-pos]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var v = b.getAttribute('data-pos');
+      state.filter.pozice = state.filter.pozice === v ? '' : v;
+      $('fPoz').value = state.filter.pozice;
+      renderSummary(); renderProducts();
+    });
+  });
+  // upozornění: výpadky, blokace
+  var bad = d.konkurenti.filter(function(k){ return k.vypadek; });
+  var parts = [];
+  if (bad.length) parts.push('<strong>Výpadek:</strong> ' + bad.map(function(k){ return esc(k.konkurent) + (k.stav === 'blokováno' ? ' (web blokuje přístup)' : ''); }).join(', ') + '. Jejich poslední známé ceny zůstávají s datem.');
+  var ageH = (new Date(d.generated).getTime() - new Date(stamp).getTime()) / 3600000;
+  if (d.snimek && ageH > 48) parts.push('<strong>Data jsou starší:</strong> přehled se naposledy přepočítal ' + esc(fmtDate(d.snimek)) + ' (poslední běh nenašel žádné čerstvé ověřené nabídky konkurentů).');
+  if (d.karantena_pocet) parts.push('<strong>Karanténa:</strong> ' + fmtNum(d.karantena_pocet) + ' ' + plural(d.karantena_pocet, 'nabídka', 'nabídky', 'nabídek') + ' vypadá chybně (viz rozbalené produkty) a do minima se nepočítá.');
+  $('notice').hidden = !parts.length;
+  $('notice').innerHTML = parts.join('<br>');
+}
+
+// ---------- produkty ----------
+function initFilters(){
+  var rady = {};
+  state.data.produkty.forEach(function(p){ if (p.rada) rady[p.rada] = true; });
+  var sel = $('fRada');
+  sel.innerHTML = '<option value="">Všechny řady</option>' + Object.keys(rady).sort().map(function(r){ return '<option>' + esc(r) + '</option>'; }).join('');
+  var ps = $('fPoz');
+  ps.innerHTML = '<option value="">Všechny pozice</option>' + POS.map(function(p){ return '<option>' + esc(p.label) + '</option>'; }).join('');
+  $('fSearch').oninput = function(){ state.filter.q = this.value; renderProducts(); };
+  sel.onchange = function(){ state.filter.rada = this.value; renderProducts(); };
+  ps.onchange = function(){ state.filter.pozice = this.value; renderSummary(); renderProducts(); };
+  $('fCmp').onchange = function(){ state.filter.cmp = this.checked; renderProducts(); };
+  $('fReset').onclick = function(){
+    state.filter = { q: '', rada: '', pozice: '', cmp: false };
+    $('fSearch').value = ''; sel.value = ''; ps.value = ''; $('fCmp').checked = false;
+    renderSummary(); renderProducts();
+  };
+}
+
+var COLS = [
+  { key: 'nazev', label: 'Gril', cls: '' },
+  { key: 'cena', label: 'Naše cena', cls: 'num' },
+  { key: 'min_cena', label: 'Min. trhu', cls: 'num' },
+  { key: 'kdo', label: 'Kdo', cls: '', sort: false },
+  { key: 'rozdil_kc', label: 'Rozdíl Kč', cls: 'num' },
+  { key: 'rozdil_pct', label: 'Rozdíl %', cls: 'num' },
+  { key: 'pozice', label: 'Pozice', cls: '' },
+  { key: 'pocet_obchodu', label: 'Obchodů', cls: 'num' },
+  { key: 'zmena_min', label: 'Změna min.', cls: 'num' }
+];
+var POS_ORDER = { 'nejlevnější': 0, 'shoda': 1, 'do 2 %': 2, '2-5 %': 3, 'nad 5 %': 4 };
+
+function sortVal(p, key){
+  if (key === 'nazev') return norm(p.nazev);
+  if (key === 'pozice') return p.pozice ? POS_ORDER[p.pozice] : null;
+  var v = p[key];
+  return isNum(v) ? v : null;
+}
+
+function filteredProducts(){
+  var f = state.filter, q = norm(f.q);
+  var list = state.data.produkty.filter(function(p){
+    if (f.rada && p.rada !== f.rada) return false;
+    if (f.pozice && p.pozice !== f.pozice) return false;
+    if (f.cmp && !p.pozice) return false;
+    if (q && norm(p.nazev + ' ' + p.rada + ' ' + p.gid).indexOf(q) < 0) return false;
+    return true;
+  });
+  var key = state.sort.key, dir = state.sort.dir;
+  list.sort(function(a, b){
+    var x = sortVal(a, key), y = sortVal(b, key);
+    if (x === null && y === null) return norm(a.nazev) < norm(b.nazev) ? -1 : 1;
+    if (x === null) return 1;
+    if (y === null) return -1;
+    if (x < y) return -dir;
+    if (x > y) return dir;
+    return norm(a.nazev) < norm(b.nazev) ? -1 : 1;
+  });
+  return list;
+}
+
+function offersTable(p){
+  if (!p.nabidky || !p.nabidky.length) return '<p class="muted" style="padding:10px 0">Žádná spárovaná nabídka konkurentů.</p>';
+  var maxAge = (state.data.nastaveni && state.data.nastaveni.max_age_days) || 8;
+  var rows = p.nabidky.map(function(n){
+    var diff = isNum(n.cena) && isNum(p.cena) ? p.cena - n.cena : null;
+    var isMin = isNum(n.cena) && isNum(p.min_cena) && Math.abs(n.cena - p.min_cena) < 0.5 && !n.karantena && n.cerstva;
+    var flags = [];
+    if (n.karantena) flags.push('<span class="badge s-bad">karanténa</span>');
+    else if (!n.cerstva) flags.push('<span class="badge s-off">starší než ' + esc(maxAge) + ' dní</span>');
+    else if (n.stav === 'chyba' || n.stav === 'blokováno') flags.push('<span class="badge s-warn">poslední stažení selhalo</span>');
+    return '<tr><td>' + esc(n.konkurent) + '</td>' +
+      '<td class="num ' + (isMin ? 'best' : '') + '">' + kc(n.cena) + '</td>' +
+      '<td class="num">' + (diff === null ? '<span class="muted">-</span>' : signedKc(-diff)) + '</td>' +
+      '<td>' + availBadge(n.dostupnost) + '</td><td>' + esc(fmtDate(n.stazeno)) + '</td>' +
+      '<td>' + flags.join(' ') + '</td>' +
+      '<td><a href="' + esc(safeUrl(n.url)) + '" target="_blank" rel="noopener noreferrer">stránka</a></td></tr>';
+  }).join('');
+  return '<table><thead><tr><th>Konkurent</th><th class="num">Cena</th><th class="num">Oproti nám</th><th>Dostupnost</th><th>Staženo</th><th>Poznámka</th><th>Odkaz</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+function renderProducts(){
+  var list = filteredProducts();
+  var all = state.data.produkty.length;
+  $('countInfo').textContent = 'Zobrazeno ' + list.length + ' z ' + all + ' ' + plural(all, 'produktu', 'produktů', 'produktů');
+  var head = '<thead><tr>' + COLS.map(function(c){
+    var active = state.sort.key === c.key;
+    var sortable = c.sort !== false;
+    return '<th class="' + c.cls + (sortable ? '' : ' nosort') + '"' + (sortable ? ' tabindex="0" data-key="' + c.key + '" role="columnheader" aria-sort="' + (active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"' : '') + '>' +
+      esc(c.label) + (active ? '<span class="arrow">' + (state.sort.dir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>';
+  }).join('') + '</tr></thead>';
+  var body = list.map(function(p){
+    var open = !!state.open[p.gid];
+    var kk = p.kdo || [];
+    var kdo = kk.length > 2 ? kk.slice(0, 2).join(', ') + ' +' + (kk.length - 2) + ' dalších' : kk.join(', ');
+    var tr = '<tr class="prod"><td class="name"><button type="button" class="toggle" data-gid="' + esc(p.gid) + '" aria-expanded="' + open + '">' + esc(p.nazev) + '</button>' +
+      (p.rada ? '<span class="serie">' + esc(p.rada) + '</span>' : '') + (p.akce ? ' <span class="badge s-warn">akce</span>' : '') + '</td>' +
+      '<td class="num">' + kc(p.cena) + '</td><td class="num">' + kc(p.min_cena) + '</td><td class="kdo">' + (kdo ? esc(kdo) : '<span class="muted">-</span>') + '</td>' +
+      '<td class="num">' + signedKc(p.rozdil_kc) + '</td><td class="num">' + signedPct(p.rozdil_pct) + '</td><td>' + posBadge(p.pozice) + '</td>' +
+      '<td class="num">' + (p.pokryti_z ? esc(p.pocet_obchodu + ' z ' + p.pokryti_z) : esc(p.pocet_obchodu)) + '</td>' +
+      '<td class="num">' + (isNum(p.zmena_min) ? signedKc(p.zmena_min) : '<span class="muted">-</span>') + '</td></tr>';
+    tr += '<tr class="detail" data-detail="' + esc(p.gid) + '"' + (open ? '' : ' hidden') + '><td colspan="' + COLS.length + '">' + (open ? offersTable(p) : '') + '</td></tr>';
+    return tr;
+  }).join('');
+  $('prodTable').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="' + COLS.length + '" class="muted" style="padding:18px">Žádný produkt neodpovídá filtru.</td></tr>') + '</tbody>';
+  $('prodTable').querySelectorAll('th[data-key]').forEach(function(th){
+    var act = function(){
+      var k = th.getAttribute('data-key');
+      if (state.sort.key === k) state.sort.dir = -state.sort.dir; else state.sort = { key: k, dir: k === 'nazev' ? 1 : -1 };
+      renderProducts();
+    };
+    th.addEventListener('click', act);
+    th.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); act(); } });
+  });
+  $('prodTable').querySelectorAll('button.toggle').forEach(function(b){
+    b.addEventListener('click', function(){
+      var gid = b.getAttribute('data-gid');
+      state.open[gid] = !state.open[gid];
+      renderProducts();
+      var again = $('prodTable').querySelector('button.toggle[data-gid="' + gid.replace(/"/g, '') + '"]');
+      if (again) again.focus();
+    });
+  });
+  // detail se naplní jen u otevřených řádků
+  list.forEach(function(p){
+    if (!state.open[p.gid]) return;
+    var cell = $('prodTable').querySelector('tr[data-detail="' + String(p.gid).replace(/"/g, '') + '"] td');
+    if (cell) cell.innerHTML = offersTable(p);
+  });
+}
+
+// ---------- konkurenti, změny, graf ----------
+function stateBadge(k){
+  var s = k.stav || '';
+  var cls = s === 'ok' ? 's-ok' : (s === 'blokováno' || s === 'chyby' ? 's-bad' : (s === 'vypnuto' ? 's-off' : 's-warn'));
+  return s ? '<span class="badge ' + cls + '">' + esc(s) + '</span>' : '<span class="muted">-</span>';
+}
+
+function renderCompetitors(){
+  var rows = state.data.konkurenti.map(function(k){
+    return '<tr><td><strong>' + esc(k.konkurent) + '</strong></td><td>' + stateBadge(k) + '</td><td>' + esc(fmtDate(k.cas)) + '</td>' +
+      '<td class="num">' + fmtNum(k.sparovano) + '</td><td class="num">' + fmtNum(k.levnejsi) + '</td><td class="num">' + fmtNum(k.shoda) + '</td><td class="num">' + fmtNum(k.drazsi) + '</td>' +
+      '<td class="num">' + (isNum(k.prumer_pct) ? signedPct(k.prumer_pct) : '<span class="muted">-</span>') + '</td>' +
+      '<td class="num">' + fmtNum(k.stazeno_ok) + ' / ' + fmtNum(k.url_celkem) + '</td>' +
+      '<td>' + (k.vypadek ? '<span class="badge s-bad">výpadek</span>' : '<span class="muted">ne</span>') + '</td></tr>';
+  }).join('');
+  $('compTable').innerHTML = '<thead><tr><th class="nosort">Konkurent</th><th class="nosort">Stav běhu</th><th class="nosort">Poslední běh</th><th class="num nosort">Spárováno</th><th class="num nosort">Levnější než my</th><th class="num nosort">Shoda</th><th class="num nosort">Dražší</th><th class="num nosort">Průměrný rozdíl</th><th class="num nosort">Staženo / URL</th><th class="nosort">Výpadek</th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="10" class="muted" style="padding:18px">Žádný konkurent.</td></tr>') + '</tbody>';
+}
+
+function renderChanges(){
+  var z = state.data.zmeny || [];
+  $('chgSub').textContent = z.length ? 'porovnání posledních dvou snímků (' + fmtDay(z[0].od) + ' a ' + fmtDay(z[0].do) + ')' : '';
+  var rows = z.map(function(c){
+    var dir = c.rozdil < 0 ? 'zlevnil' : 'zdražil';
+    if (c.konkurent === 'Flamaro') dir = c.rozdil < 0 ? 'my jsme zlevnili' : 'my jsme zdražili';
+    return '<tr><td>' + esc(c.nazev) + '</td><td>' + esc(c.konkurent) + '</td><td class="num"><span class="old">' + fmtNum(c.stara) + ' Kč</span> ' + fmtNum(c.nova) + ' Kč</td>' +
+      '<td class="num">' + signedKc(c.rozdil) + '</td><td class="num">' + signedPct(c.rozdil_pct) + '</td><td>' + esc(dir) + '</td></tr>';
+  }).join('');
+  $('chgTable').innerHTML = '<thead><tr><th class="nosort">Gril</th><th class="nosort">Kdo</th><th class="num nosort">Cena (dříve → nyní)</th><th class="num nosort">Rozdíl</th><th class="num nosort">Rozdíl %</th><th class="nosort"></th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="6" class="muted" style="padding:18px">Mezi posledními snímky se žádná cena nezměnila (nebo je k dispozici jen jeden snímek).</td></tr>') + '</tbody>';
+}
+
+function renderHistory(){
+  destroyCharts();
+  var h = state.data.historie || {};
+  var days = Object.keys(h).sort();
+  var note = $('histNote');
+  if (days.length < 2){
+    note.textContent = 'Graf se objeví, až bude k dispozici aspoň několik denních snímků.';
+    return;
+  }
+  note.textContent = 'Podíl = grily, kde je naše cena nejnižší nebo ve shodě s nejnižší. Medián rozdílu = prostřední hodnota (naše cena − minimum trhu) / minimum, záporné číslo znamená, že jsme pod trhem. Zahrnuje jen grily, u kterých byla ověřená nabídka konkurenta.';
+  var labels = days.map(fmtDay);
+  var share = days.map(function(d){ return isNum(h[d].podil_nejlevnejsich) ? h[d].podil_nejlevnejsich : null; });
+  var med = days.map(function(d){ return isNum(h[d].median_diff_pct) ? h[d].median_diff_pct : null; });
+  var ch = new Chart($('histChart'), {
+    type: 'line',
+    data: { labels: labels, datasets: [
+      { label: 'Podíl nejlevnějších nebo ve shodě (%)', data: share, borderColor: '#083027', backgroundColor: '#083027', yAxisID: 'y', borderWidth: 2, pointRadius: 2, tension: .2, spanGaps: true },
+      { label: 'Medián rozdílu proti minimu trhu (%)', data: med, borderColor: '#ff4a21', backgroundColor: '#ff4a21', yAxisID: 'y2', borderWidth: 2, pointRadius: 2, tension: .2, spanGaps: true, borderDash: [6, 4] }
+    ] },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } },
+        tooltip: { callbacks: { label: function(c){ return c.dataset.label + ': ' + (c.parsed.y == null ? '-' : String(c.parsed.y).replace('.', ',') + ' %'); } } } },
+      scales: {
+        x: { grid: { color: C_GRID }, ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
+        y: { position: 'left', min: 0, max: 100, grid: { color: C_GRID }, title: { display: true, text: 'Podíl (%)' } },
+        y2: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Medián rozdílu (%)' } }
+      }
+    }
+  });
+  charts.push(ch);
+}
+
+function renderAll(){
+  renderSummary();
+  renderProducts();
+  renderCompetitors();
+  renderChanges();
+  renderHistory();
+}
+
+$('methLink').addEventListener('click', function(e){
+  e.preventDefault();
+  var d = $('metodika'); d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+load();
+})();
+</script>
+</body>
+</html>
