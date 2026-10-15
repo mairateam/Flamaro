@@ -218,84 +218,143 @@
     .footer-inner{ padding:24px 16px 20px; }
   }
 
-/* ---- stránka Ceny ---- */
+/* ---- stránka Ceny (jen tato stránka, sdílený style_base.css se nemění) ---- */
+/* Oranžová pro text: Power Orange #ff4a21 má na bílé jen 3,4:1, pro text proto tmavší odstín (5,5:1). */
+:root{ --orange-text:#c4320f; }
 .report-nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}
 .report-nav a{display:inline-block;padding:8px 14px;border:2px solid rgba(255,255,255,.35);color:var(--white);font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;text-decoration:none}
 .report-nav a:hover,.report-nav a:focus-visible{border-color:var(--orange);outline:none}
 .report-nav a[aria-current="page"]{background:var(--orange);border-color:var(--orange)}
 @media(max-width:500px){.report-nav{flex:1 1 100%}.report-nav a{flex:1 1 0;text-align:center}}
 main,.card,.kpi-card,.tbl-scroll{min-width:0}
+.subtitle{max-width:70ch}
 .status{padding:22px;border:1px dashed var(--muted);color:var(--ink-2);font-size:14px;text-align:center;margin-bottom:24px}
-.status.error{border-color:var(--orange);color:var(--orange-dark);background:var(--neg-bg);text-align:left}
+.status.error{border-color:var(--orange);color:var(--ink);background:var(--neg-bg);text-align:left;line-height:1.6}
+.status.error .fbtn{margin-top:10px}
 .status[hidden]{display:none}
 .sample-banner{background:#fff4e5;border:1px solid #f0c987;color:#6b4a0b;padding:10px 14px;font-size:13px;margin-bottom:20px}
 .sample-banner[hidden]{display:none}
-.sec-title{font-size:20px;font-weight:800;letter-spacing:-.02em;text-transform:uppercase;color:var(--green);margin:36px 0 14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.sec-title{font-size:20px;font-weight:800;letter-spacing:-.02em;text-transform:uppercase;color:var(--green);margin:40px 0 14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
 .sec-title small{font-size:13px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-2)}
-.kpi-grid.five{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.sec-title:first-child{margin-top:0}
+/* Hlavní sdělení: jedna věta, jediný výrazný prvek souhrnu */
+.verdict{font-size:19px;font-weight:600;line-height:1.45;color:var(--green);max-width:46em;margin:0 0 18px;padding-left:16px;border-left:4px solid var(--orange)}
+.verdict strong{color:var(--orange-text);font-weight:800}
+.verdict.calm{border-left-color:var(--green)}
+.verdict.calm strong{color:var(--green)}
+.verdict.wait{border-left-color:var(--muted);color:var(--ink);font-weight:500}
+.verdict.wait strong{color:var(--ink)}
+.kpi-grid.six{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .kpi-card.pos-nejlevnejsi{border-top-color:var(--green)}
 .kpi-card.pos-shoda{border-top-color:#4f8a78}
-.kpi-card.pos-do2{border-top-color:var(--muted)}
-.kpi-card.pos-od2do5{border-top-color:#f9856b}
-.kpi-card.pos-nad5{border-top-color:var(--orange-dark)}
-.kpi-card.pos-bez{border-top-color:var(--grey)}
-button.kpi-card{font:inherit;text-align:left;cursor:pointer;color:inherit;width:100%}
+.kpi-card.pos-do2{border-top-color:#f9856b}
+.kpi-card.pos-od2do5{border-top-color:var(--orange)}
+.kpi-card.pos-nad5{border-top-color:var(--orange-text)}
+.kpi-card.pos-bez{border-top-color:var(--muted)}
+.kpi-card .kpi-value.zero{color:var(--ink-2);font-weight:600}
+button.kpi-card{font:inherit;text-align:left;cursor:pointer;color:inherit;width:100%;transition:box-shadow .15s ease,background-color .15s ease}
 button.kpi-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.16)}
 button.kpi-card:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
-button.kpi-card[aria-pressed="true"]{background:#f7f7f7;box-shadow:inset 0 0 0 2px var(--green)}
-.notice{margin:0 0 20px;padding:12px 16px;border-left:4px solid var(--orange);background:#fff;box-shadow:var(--shadow-sm);font-size:13px;line-height:1.6}
+button.kpi-card[aria-pressed="true"]{background:#f3f6f5;box-shadow:inset 0 0 0 2px var(--green)}
+button.kpi-card small{display:block;color:var(--ink-2);font-size:12px;margin-top:4px}
+.notice{margin:0 0 20px;padding:12px 16px;border-left:4px solid var(--orange);background:#fff;box-shadow:var(--shadow-sm);font-size:13px;line-height:1.6;max-width:80ch}
 .notice strong{color:var(--green)}
 .notice[hidden]{display:none}
 .filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px}
 .filters input[type=search],.filters select{min-height:40px;border:2px solid var(--grey);border-radius:0;background:var(--white);color:var(--ink);font-family:var(--font);font-size:13px;padding:8px 12px;max-width:100%}
 .filters input[type=search]{flex:1 1 240px;min-width:0}
 .filters input:focus-visible,.filters select:focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-color:var(--orange)}
-.filters label.chk{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
-.filters label.chk input{accent-color:var(--orange)}
+.filters label.chk{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;min-height:40px}
+.filters label.chk input{accent-color:var(--orange);width:16px;height:16px}
 .fbtn{min-height:40px;border:2px solid var(--grey);border-radius:0;background:var(--white);color:var(--ink);font-family:var(--font);font-size:13px;padding:8px 12px;font-weight:600;cursor:pointer}
 .fbtn:hover,.fbtn:focus-visible{border-color:var(--orange);outline:none}
-.count-info{font-size:13px;color:var(--ink-2);margin:0 0 8px}
+.count-info{font-size:13px;color:var(--ink-2);margin:0 0 8px;display:flex;flex-wrap:wrap;gap:4px 16px}
+.scroll-hint{display:none;font-size:12px;color:var(--ink-2);margin:0 0 6px}
 table.pt{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
-table.pt thead th{position:sticky;top:0;background:#e6e6e6;padding:10px 12px;text-align:left;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;cursor:pointer;user-select:none}
+table.pt thead th{position:sticky;top:0;z-index:2;background:#e6e6e6;padding:10px 12px;text-align:left;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;line-height:1.3;vertical-align:bottom;cursor:pointer;user-select:none}
 table.pt thead th.nosort{cursor:default}
 table.pt thead th:hover:not(.nosort){color:var(--green)}
 table.pt thead th:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
 table.pt th.num,table.pt td.num{text-align:right}
-table.pt thead th .arrow{font-size:10px;color:var(--orange);margin-left:4px}
-table.pt tbody td{padding:9px 12px;border-bottom:1px solid var(--grey);vertical-align:middle}
+table.pt td.num,table.pt td.date{white-space:nowrap}
+table.pt td.gril{min-width:200px}
+table.pt thead th .arrow{font-size:10px;color:var(--orange-text);margin-left:4px}
+table.pt tbody td{padding:10px 12px;border-bottom:1px solid var(--grey);vertical-align:middle}
 table.pt tbody tr.prod:hover td{background:#f7f7f7}
-table.pt td.name{min-width:240px}
-table.pt .toggle{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-weight:600;line-height:1.35}
-table.pt .toggle::before{content:'▸';color:var(--orange);font-size:13px;flex:none}
+table.pt tbody tr.nocmp td{color:var(--ink-2)}
+table.pt tbody tr.nocmp td .toggle{color:var(--ink);font-weight:500}
+table.pt td.name{min-width:260px;max-width:420px}
+table.pt .toggle{all:unset;cursor:pointer;display:inline-flex;align-items:flex-start;gap:8px;color:var(--ink);font-weight:600;line-height:1.35;min-height:24px}
+table.pt .toggle::before{content:'▸';color:var(--orange);font-size:13px;flex:none;line-height:1.35}
 table.pt .toggle[aria-expanded="true"]::before{content:'▾'}
 table.pt .toggle:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
-table.pt .serie{display:inline-block;margin-left:6px;padding:1px 6px;background:var(--grey);color:var(--ink-2);font-size:11px;font-weight:400}
-table.pt .kdo{max-width:260px;white-space:normal;overflow-wrap:anywhere;color:var(--ink-2)}
-table.pt tr.detail td{background:#fafafa;padding:0 12px 14px 36px}
+table.pt .sub{display:block;margin:3px 0 0 21px;font-size:12px;color:var(--ink-2);font-weight:400}
+table.pt .sub .badge{margin-left:6px;vertical-align:middle}
+table.pt td.kdo{white-space:nowrap;color:var(--ink)}
+table.pt td.kdo .more{display:block;font-size:12px;color:var(--ink-2)}
+table.pt td.diff{white-space:nowrap}
+table.pt td.diff .pct{display:block;font-weight:700}
+table.pt td.diff .kc{display:block;font-size:12px;color:var(--ink-2)}
+table.pt tr.detail td{background:#fafafa;padding:0 12px 16px 36px}
 table.pt tr.detail[hidden]{display:none}
-table.pt tr.detail table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+table.pt tr.detail .detail-head{margin:10px 0 6px;font-size:12.5px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:4px 18px}
+table.pt tr.detail .detail-scroll{overflow-x:auto}
+table.pt tr.detail table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
 table.pt tr.detail th{padding:6px 10px;text-align:left;color:var(--ink-2);font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--grey);white-space:nowrap;cursor:default;position:static;background:transparent}
-table.pt tr.detail td{padding:6px 10px;border-bottom:1px solid #eee;background:transparent}
+table.pt tr.detail td{padding:7px 10px;border-bottom:1px solid #eee;background:transparent;color:var(--ink)}
 table.pt tr.detail td.best{font-weight:800;color:var(--green)}
-.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-size:11.5px;font-weight:700;white-space:nowrap}
+table.pt tr.detail td.off{color:var(--ink-2)}
+table.pt tr.detail a{color:var(--green);font-weight:600}
+table.pt tr.detail a:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+table.pt tr.expander td{padding:0;border-bottom:1px solid var(--grey);background:#fafafa}
+table.pt tr.expander button{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;padding:12px;font-size:13px;color:var(--green);font-weight:600}
+table.pt tr.expander button::before{content:'▸';color:var(--orange);margin-right:8px}
+table.pt tr.expander button[aria-expanded="true"]::before{content:'▾'}
+table.pt tr.expander button:hover{background:#f3f6f5}
+table.pt tr.expander button:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+table.pt tr.expander small{display:block;font-weight:400;color:var(--ink-2);margin-left:21px;white-space:normal}
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-size:11.5px;font-weight:700;white-space:nowrap;line-height:1.5}
 .badge.p-nejlevnejsi{background:var(--green);color:#fff}
 .badge.p-shoda{background:var(--pos-bg);color:var(--green)}
 .badge.p-do2{background:var(--grey);color:var(--ink)}
-.badge.p-od2do5{background:var(--neg-bg);color:var(--orange-dark)}
-.badge.p-nad5{background:var(--orange);color:#fff}
-.badge.p-bez{background:#f2f2f2;color:var(--muted)}
+.badge.p-od2do5{background:var(--neg-bg);color:var(--orange-text)}
+.badge.p-nad5{background:var(--orange-text);color:#fff}
+.badge.p-bez{background:#f2f2f2;color:var(--ink-2);font-weight:600}
 .badge.s-ok{background:var(--pos-bg);color:var(--green)}
-.badge.s-bad{background:var(--neg-bg);color:var(--orange-dark)}
+.badge.s-bad{background:var(--neg-bg);color:var(--orange-text)}
 .badge.s-warn{background:#fff1d6;color:#7a5200}
-.badge.s-off{background:#f2f2f2;color:var(--muted)}
-.diff-pos{color:var(--orange-dark);font-weight:600}
-.diff-neg{color:var(--green);font-weight:600}
-.muted{color:var(--muted)}
-.old{color:var(--muted);text-decoration:line-through;margin-right:4px}
+.badge.s-off{background:#f2f2f2;color:var(--ink-2)}
+.diff-pos{color:var(--orange-text);font-weight:700}
+.diff-neg{color:var(--green);font-weight:700}
+.diff-zero{color:var(--ink-2)}
+.muted{color:var(--ink-2)}
+.dash{color:var(--muted)}
+.old{color:var(--ink-2);text-decoration:line-through;margin-right:4px;font-weight:400}
 .tbl-scroll{overflow-x:auto;border:1px solid var(--grey);max-width:100%}
 .tbl-scroll.limit{max-height:640px;overflow:auto}
+.tbl-note{font-size:12.5px;color:var(--ink-2);margin:8px 0 0;line-height:1.6;max-width:80ch}
 .chart-wrap{height:340px}
-@media(max-width:640px){.chart-wrap{height:280px}table.pt td.name{min-width:200px}table.pt tr.detail td{padding-left:12px}}
+.chart-wrap[hidden]{display:none}
+.table-note{font-size:12.5px;color:var(--ink-2);margin-top:10px;line-height:1.6;max-width:80ch}
+@media(max-width:760px){
+  .verdict{font-size:17px}
+  .scroll-hint{display:block}
+  /* První sloupec zůstává při posouvání tabulky vidět */
+  table.pt td.name,table.pt th.name{position:sticky;left:0;z-index:1;background:#fff;border-right:1px solid var(--grey)}
+  table.pt thead th.name{z-index:3;background:#e6e6e6}
+  table.pt tbody tr.prod:hover td.name{background:#f7f7f7}
+  table.pt td.name{min-width:200px;max-width:230px}
+  table.pt tbody td{padding:12px 10px}
+  table.pt .hide-m,table.pt .hide-m *{display:none}
+  table.pt tr.detail td{padding-left:12px}
+  table.pt tr.detail td.name{position:static;border-right:0}
+  table.pt tr.expander td{position:static}
+  table.pt tr.expander button{position:sticky;left:0;max-width:calc(100vw - 34px)}
+  table.pt td.gril{min-width:170px}
+  .filters label.chk,.fbtn{min-height:44px}
+  .chart-wrap{height:280px}
+}
+@media(prefers-reduced-motion:reduce){button.kpi-card{transition:none}}
 </style>
 </head>
 <body>
@@ -321,63 +380,65 @@ table.pt tr.detail td.best{font-weight:800;color:var(--green)}
   <div class="sample-banner" id="sampleBanner" hidden>Zobrazen vzorek dat (test/sample-doget.json), ne živá data.</div>
   <div class="status" id="status" role="status" aria-live="polite">Načítám data…</div>
 
-  <details class="methodology" id="metodika">
-    <summary>Metodika (klikněte pro rozbalení)</summary>
-    <div class="methodology-body">
-      <h3>Zdroj dat</h3>
-      <p>Naše ceny jsou z výstupního feedu Google Nákupy (cena s DPH, při platné akci akční cena). Ceny konkurentů se jednou denně v noci čtou z veřejných stránek jejich e-shopů. Produkty se párují podle EAN, záložně podle kódu Weber. Varianta se stejným názvem a jiným EAN se nepáruje.</p>
-      <h3>Minimální cena trhu</h3>
-      <p>Počítá se jen z čerstvých nabídek (stažených v posledních <span data-fill="maxage">8</span> dnech), které se podařilo spárovat a ověřit a které jsou skladem nebo bez uvedené dostupnosti. Nabídky bez skladu jsou v rozbalené tabulce vidět, do minima nevstupují.</p>
-      <h3>Rozdíl a pozice</h3>
-      <p>Rozdíl = naše cena minus nejnižší cena trhu. Kladný rozdíl znamená, že jsme dražší. Pozice: nejlevnější (pod trhem), shoda (do 0,5 Kč), do 2 %, 2-5 %, nad 5 % nad minimem trhu.</p>
-      <h3>Karanténa a výpadky</h3>
-      <p>Nabídka s nulovou cenou, jinou měnou než CZK nebo s odchylkou přes <span data-fill="quar">50</span> % od naší ceny jde do karantény a nepočítá se. Výpadek konkurenta znamená, že se z jeho webu načetlo výrazně méně nabídek než minule nebo že web přístup blokuje. Jeho poslední známé ceny zůstávají s datem, po <span data-fill="maxage2">8</span> dnech se přestanou počítat.</p>
-      <h3>Pozor</h3>
-      <p>Americký GRIL (oficiální distribuce Weber) uvádí doporučené ceny, takže spíš určuje referenční cenu než nejnižší cenu na trhu.</p>
-    </div>
-  </details>
-
   <div id="content" hidden>
-    <h2 class="sec-title">Souhrn <small id="secSumSub"></small></h2>
-    <div class="kpi-grid" id="kpiMain"></div>
+    <h2 class="sec-title">Souhrn</h2>
+    <p class="verdict" id="verdict"></p>
     <div class="notice" id="notice" hidden></div>
-    <div class="kpi-grid five" id="kpiPos" role="group" aria-label="Filtr podle pozice"></div>
+    <div class="kpi-grid six" id="kpiPos" role="group" aria-label="Počet grilů podle pozice proti konkurenci, kliknutím se tabulka omezí na danou pozici"></div>
 
-    <h2 class="sec-title">Produkty <small>klikněte na produkt pro ceny všech konkurentů</small></h2>
+    <h2 class="sec-title">Grily <small>kliknutím na název se rozbalí ceny ve všech obchodech</small></h2>
     <div class="filters">
       <input type="search" id="fSearch" placeholder="Hledat gril…" aria-label="Hledat gril">
       <select id="fRada" aria-label="Filtr podle řady"><option value="">Všechny řady</option></select>
       <select id="fPoz" aria-label="Filtr podle pozice"><option value="">Všechny pozice</option></select>
-      <label class="chk"><input type="checkbox" id="fCmp"> Jen s porovnáním</label>
+      <label class="chk"><input type="checkbox" id="fCmp"> Jen porovnané</label>
       <button type="button" class="fbtn" id="fReset">Zrušit filtry</button>
     </div>
     <p class="count-info" id="countInfo" aria-live="polite"></p>
+    <p class="scroll-hint">Tabulku lze posouvat do stran, název grilu zůstává vidět.</p>
     <div class="tbl-scroll"><table class="pt" id="prodTable"></table></div>
+    <p class="tbl-note">Rozdíl = naše cena proti nejnižší ceně u konkurence. Kladný rozdíl znamená, že jsme dražší. Ceny s DPH.</p>
 
-    <h2 class="sec-title">Konkurenti</h2>
+    <h2 class="sec-title">Obchody konkurence <small>kolik grilů jsme porovnali a jak u nich stojíme</small></h2>
     <div class="tbl-scroll"><table class="pt" id="compTable"></table></div>
 
-    <h2 class="sec-title">Změny od minulého snímku <small id="chgSub"></small></h2>
+    <h2 class="sec-title">Změny cen od minulé aktualizace <small id="chgSub"></small></h2>
     <div class="tbl-scroll limit"><table class="pt" id="chgTable"></table></div>
 
-    <h2 class="sec-title">Vývoj pozice v čase <small>posledních 90 dní</small></h2>
+    <h2 class="sec-title">Vývoj v čase <small>posledních 90 dní</small></h2>
     <div class="card">
-      <div class="card-title">Podíl grilů, kde jsme nejlevnější nebo ve shodě, a medián rozdílu proti minimu trhu</div>
+      <div class="card-title">Podíl grilů, kde nejsme dražší než konkurence, a typický rozdíl proti nejnižší ceně</div>
       <div class="chart-wrap"><canvas id="histChart" role="img" aria-label="Graf vývoje pozice v čase"></canvas></div>
       <p class="table-note" id="histNote"></p>
     </div>
+
+    <details class="methodology" id="metodika">
+      <summary>Jak se ceny porovnávají</summary>
+      <div class="methodology-body">
+        <h3>Odkud jsou ceny</h3>
+        <p>Naše ceny jsou z nabídky Flamaro pro Google Nákupy (cena s DPH, při platné akci akční cena). Ceny konkurence se jednou denně v noci načítají z veřejných stránek jejich e-shopů. Produkty se párují podle EAN, záložně podle kódu Weber. Varianta se stejným názvem a jiným EAN se nepáruje.</p>
+        <h3>Nejnižší cena u konkurence</h3>
+        <p>Počítá se jen z nabídek načtených v posledních <span data-fill="maxage">8</span> dnech, které se podařilo spárovat a ověřit a které jsou skladem nebo bez uvedené dostupnosti. Nabídky bez skladu jsou v rozbaleném detailu vidět, do nejnižší ceny nevstupují.</p>
+        <h3>Rozdíl a pozice</h3>
+        <p>Rozdíl = naše cena minus nejnižší cena u konkurence. Kladný rozdíl znamená, že jsme dražší. Pozice: levnější (pod konkurencí), stejná cena (rozdíl do 0,50 Kč), dražší do 2 %, dražší o 2 až 5 %, dražší o víc než 5 %.</p>
+        <h3>Vyřazené nabídky a výpadky</h3>
+        <p>Nabídka s nulovou cenou, v jiné měně než Kč nebo s cenou o víc než <span data-fill="quar">50</span> % jinou než naše se považuje za podezřelou a nepočítá se (v detailu je označená). Výpadek obchodu znamená, že se z jeho webu načetlo výrazně méně nabídek než minule nebo že web přístup blokuje. Jeho poslední známé ceny zůstávají s datem, po <span data-fill="maxage2">8</span> dnech se přestanou počítat.</p>
+        <h3>Pozor</h3>
+        <p>Americký GRIL (oficiální distribuce Weber) uvádí doporučené ceny, takže spíš určuje referenční cenu než nejnižší cenu na trhu.</p>
+      </div>
+    </details>
   </div>
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <p class="footer-note">Data: výstupní feed Flamaro (Mergado) a veřejné stránky e-shopů konkurentů, aktualizace jednou denně. Ceny s DPH v Kč.</p>
+    <p class="footer-note">Data: nabídka Flamaro pro Google Nákupy (Mergado) a veřejné stránky e-shopů konkurence, aktualizace jednou denně. Ceny s DPH v Kč.</p>
     <div class="footer-bottom">
       <div class="footer-brand">
         <svg class="logo-maira logo-maira-white" viewBox="384.89 417.14 1150.22 176" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MAIRA" focusable="false"><g fill="#ffffff"><polygon points="384.89 417.14 500.14 417.14 534.74 504.16 569.48 417.14 684.11 417.14 684.11 593.14 603.35 593.14 603.72 474.82 558.43 593.14 504.68 593.14 459.51 474.82 459.76 593.14 384.89 593.14 384.89 417.14"/><path d="M760.3,417.14h102.85l81,176h-92.05l-7.12-19.88h-67.87l-7,19.88h-90.45l80.63-176ZM830.99,533.86l-20.25-56.95-19.88,56.95h40.13Z"/><rect x="939.82" y="417.14" width="86.04" height="176"/><path d="M1041.39,417.14h171.09c41.36,0,62.96,21.48,62.96,55.48v1.35c0,24.18-11.66,41.48-34.49,48.23,8.84,4.05,14.11,11.66,18.66,23.93l8.59,23.57c4.54,12.4,8.35,18.41,13.87,22.21v1.23h-93.03c-2.95-4.42-5.4-11.78-7.85-21.85l-2.95-13.62c-2.45-9.7-7.85-13.99-17.92-13.99h-33.14v49.46h-85.79v-176ZM1189.65,486.12v-.98c0-9.57-6.63-16.2-18.41-16.2h-44.06v33.38h44.06c11.78,0,18.41-6.63,18.41-16.2"/><path d="M1351.26,417.14h102.85l81,176h-92.05l-7.12-19.88h-67.87l-6.99,19.88h-90.46l80.64-176ZM1421.95,533.86l-20.25-56.95-19.88,56.95h40.14Z"/></g></svg>
         <span>Zpracovala Maira pro Flamaro</span>
       </div>
-      <p><a href="#metodika" id="methLink">Metodika</a> · generováno automaticky</p>
+      <p><a href="#metodika" id="methLink">Jak se ceny porovnávají</a> · generováno automaticky</p>
     </div>
   </div>
 </footer>
@@ -587,27 +648,33 @@ var charts = [];
   }
 
 
+var REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Pozice: key = hodnota v JSON (pozice), label = srozumitelný text pro klienta, cnt = klíč v pozice_souhrn
 var POS = [
-  { key: 'nejlevnejsi', label: 'nejlevnější', cls: 'nejlevnejsi', cnt: 'nejlevnejsi' },
-  { key: 'shoda', label: 'shoda', cls: 'shoda', cnt: 'shoda' },
-  { key: 'do 2 %', label: 'do 2 %', cls: 'do2', cnt: 'do2' },
-  { key: '2-5 %', label: '2-5 %', cls: 'od2do5', cnt: 'od2do5' },
-  { key: 'nad 5 %', label: 'nad 5 %', cls: 'nad5', cnt: 'nad5' }
+  { key: 'nejlevnější', label: 'levnější než konkurence', short: 'levnější', cls: 'nejlevnejsi', cnt: 'nejlevnejsi' },
+  { key: 'shoda', label: 'stejná cena', short: 'stejná cena', cls: 'shoda', cnt: 'shoda' },
+  { key: 'do 2 %', label: 'dražší do 2 %', short: 'dražší do 2 %', cls: 'do2', cnt: 'do2' },
+  { key: '2-5 %', label: 'dražší o 2 až 5 %', short: 'dražší 2 až 5 %', cls: 'od2do5', cnt: 'od2do5' },
+  { key: 'nad 5 %', label: 'dražší o víc než 5 %', short: 'dražší nad 5 %', cls: 'nad5', cnt: 'nad5' }
 ];
-var POS_BY_LABEL = {};
-POS.forEach(function(p){ POS_BY_LABEL[p.label] = p; });
+var POS_BEZ = '__bez';   // hodnota filtru pro grily bez porovnání
+var POS_BY_KEY = {};
+POS.forEach(function(p){ POS_BY_KEY[p.key] = p; });
 
 var state = {
   data: null,
   sort: { key: 'rozdil_pct', dir: -1 },
   filter: { q: '', rada: '', pozice: '', cmp: false },
-  open: {}
+  open: {},
+  showNoCmp: false   // rozbalení grilů bez porovnání v základním (nefiltrovaném) pohledu
 };
 
 function $(id){ return document.getElementById(id); }
 function esc(s){ return escapeHtml(s == null ? '' : s); }
 function isNum(v){ return typeof v === 'number' && isFinite(v); }
-function kc(v){ return isNum(v) ? fmtNum(v) + ' Kč' : '<span class="muted">-</span>'; }
+function dash(){ return '<span class="dash" aria-label="není k dispozici">-</span>'; }
+function kc(v){ return isNum(v) ? fmtNum(v) + ' Kč' : dash(); }
 function norm(s){ return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
 function safeUrl(u){ return /^https?:\/\//i.test(String(u || '')) ? String(u) : '#'; }
 function fmtDate(iso){
@@ -621,25 +688,28 @@ function fmtDay(s){
   var m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
   return m ? parseInt(m[3], 10) + '. ' + parseInt(m[2], 10) + '. ' + m[1] : '-';
 }
-function diffCls(v){ return !isNum(v) || v === 0 ? '' : (v > 0 ? 'diff-pos' : 'diff-neg'); }
+function diffCls(v){ return !isNum(v) || v === 0 ? 'diff-zero' : (v > 0 ? 'diff-pos' : 'diff-neg'); }
 function signedKc(v){
-  if (!isNum(v)) return '<span class="muted">-</span>';
+  if (!isNum(v)) return dash();
   return '<span class="' + diffCls(v) + '">' + (v > 0 ? '+' : '') + fmtNum(v) + ' Kč</span>';
 }
 function signedPct(v){
-  if (!isNum(v)) return '<span class="muted">-</span>';
+  if (!isNum(v)) return dash();
   return '<span class="' + diffCls(v) + '">' + fmtPct(v) + '</span>';
 }
-function posBadge(label){
-  if (!label) return '<span class="badge p-bez">bez srovnání</span>';
-  var p = POS_BY_LABEL[label];
-  return '<span class="badge p-' + (p ? p.cls : 'bez') + '">' + esc(label) + '</span>';
+function posBadge(key){
+  if (!key) return '<span class="badge p-bez">bez porovnání</span>';
+  var p = POS_BY_KEY[key];
+  return '<span class="badge p-' + (p ? p.cls : 'bez') + '">' + esc(p ? p.short : key) + '</span>';
 }
 function availBadge(av){
   if (!av) return '<span class="muted">neuvedeno</span>';
   var cls = av === 'skladem' ? 's-ok' : (av === 'není skladem' ? 's-bad' : 's-warn');
   return '<span class="badge ' + cls + '">' + esc(av) + '</span>';
 }
+function grily(n){ return plural(n, 'gril', 'grily', 'grilů'); }
+// po „u / z / všech“ je vždy 2. pád: 1 porovnaného grilu, jinak porovnaných grilů
+function porovnanych(n){ return n === 1 ? 'porovnaného grilu' : 'porovnaných grilů'; }
 
 // ---------- načtení dat ----------
 function showStatus(msg, isError){
@@ -647,6 +717,13 @@ function showStatus(msg, isError){
   s.hidden = !msg;
   s.className = 'status' + (isError ? ' error' : '');
   s.textContent = msg || '';
+  if (isError && !/sample=1/.test(location.search)){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'fbtn'; b.textContent = 'Zkusit znovu';
+    b.addEventListener('click', function(){ showStatus('Načítám data…'); load(); });
+    s.appendChild(document.createElement('br'));
+    s.appendChild(b);
+  }
 }
 
 function load(){
@@ -680,6 +757,7 @@ function load(){
 function start(data){
   if (!data || !Array.isArray(data.produkty)){ showStatus('Odpověď serveru nemá očekávaný tvar.', true); return; }
   state.data = data;
+  data.konkurenti = Array.isArray(data.konkurenti) ? data.konkurenti : [];
   showStatus('');
   $('content').hidden = false;
   document.querySelectorAll('[data-fill=maxage],[data-fill=maxage2]').forEach(function(n){ n.textContent = (data.nastaveni && data.nastaveni.max_age_days) || 8; });
@@ -691,45 +769,58 @@ function start(data){
 // ---------- souhrn ----------
 function renderSummary(){
   var d = state.data, p = d.produkty;
-  var withCmp = p.filter(function(x){ return x.pozice; }).length;
-  var covS = 0, covZ = 0;
-  p.forEach(function(x){ covS += x.pokryti_s || 0; if (x.pokryti_z > covZ) covZ = x.pokryti_z; });
-  var avgCov = p.length ? covS / p.length : 0;
+  var compared = p.filter(function(x){ return x.pozice; });
   var stamp = d.snimek || d.generated;   // snimek = poslední skutečný přepočet přehledu (generated je jen čas dotazu)
-  $('subtitle').innerHTML = '<strong>Aktualizováno:</strong> ' + esc(fmtDate(stamp)) + ' · ' + esc(p.length + ' ' + plural(p.length, 'produkt', 'produkty', 'produktů')) + ' · ceny s DPH';
-  $('secSumSub').textContent = 'stav k ' + fmtDate(stamp);
-  var cards = [
-    ['Produktů Weber', fmtNum(p.length), 'v našem feedu'],
-    ['S porovnáním', fmtNum(withCmp), 'z ' + fmtNum(p.length) + ' má aspoň jednu ověřenou nabídku'],
-    ['Průměrné pokrytí', avgCov.toFixed(1).replace('.', ','), 'konkurentů na produkt z ' + (covZ || 0) + ' sledovaných'],
-    ['Karanténa', fmtNum(d.karantena_pocet || 0), (d.karantena_pocet ? 'nabídek vypadá chybně a nepočítá se' : 'žádná nabídka v karanténě')]
-  ];
-  $('kpiMain').innerHTML = cards.map(function(c){
-    return '<div class="kpi-card"><div class="kpi-label">' + esc(c[0]) + '</div><div class="kpi-value">' + c[1] + '</div><small>' + esc(c[2]) + '</small></div>';
-  }).join('');
+  var loaded = d.konkurenti.filter(function(k){ return k.stazeno_ok > 0; }).length;
+  $('subtitle').innerHTML = '<strong>Aktualizováno ' + esc(fmtDate(stamp)) + '.</strong> Porovnáno ' + fmtNum(compared.length) + ' z ' + fmtNum(p.length) + ' ' + esc(grily(p.length)) +
+    ' Weber z nabídky Flamaro, sledujeme ' + fmtNum(d.konkurenti.length) + ' ' + esc(plural(d.konkurenti.length, 'obchod', 'obchody', 'obchodů')) +
+    (d.konkurenti.length && loaded < d.konkurenti.length ? ' (zatím načteno ' + fmtNum(loaded) + ')' : '') + '. Ceny s DPH.';
+
+  // hlavní věta: kde jsme dražší a o kolik
   var poz = d.pozice_souhrn || {};
+  var drazsi = (poz.do2 || 0) + (poz.od2do5 || 0) + (poz.nad5 || 0);
+  var v = $('verdict');
+  if (!compared.length){
+    v.className = 'verdict wait';
+    v.innerHTML = 'Zatím <strong>žádný gril nemá ověřenou cenu konkurence</strong>. Obchody se načítají postupně, porovnání se doplní v dalších dnech.';
+  } else if (!drazsi){
+    v.className = 'verdict calm';
+    v.innerHTML = 'U ' + (compared.length === 1 ? '' : 'všech ') + '<strong>' + fmtNum(compared.length) + ' ' + porovnanych(compared.length) + '</strong> máme stejnou nebo nižší cenu než konkurence.';
+  } else {
+    var worst = compared.filter(function(x){ return isNum(x.rozdil_pct); }).sort(function(a, b){ return b.rozdil_pct - a.rozdil_pct; })[0];
+    v.className = 'verdict';
+    v.innerHTML = 'Dražší než konkurence jsme u <strong>' + fmtNum(drazsi) + ' z ' + fmtNum(compared.length) + ' ' + porovnanych(compared.length) + '</strong>' +
+      (poz.nad5 ? ', u ' + fmtNum(poz.nad5) + ' o víc než 5 %' : '') + '.' +
+      (worst ? ' Největší rozdíl: ' + esc(worst.nazev) + ' <strong>' + fmtPct(worst.rozdil_pct) + '</strong> (o ' + fmtNum(worst.rozdil_kc) + ' Kč).' : '');
+  }
+
   var html = POS.map(function(pp){
     var n = poz[pp.cnt] || 0;
-    return '<button type="button" class="kpi-card pos-' + pp.cls + '" data-pos="' + esc(pp.label) + '" aria-pressed="' + (state.filter.pozice === pp.label) + '">' +
-      '<div class="kpi-label">' + esc(pp.label) + '</div><div class="kpi-value">' + fmtNum(n) + '</div><small>' + esc(plural(n, 'produkt', 'produkty', 'produktů')) + '</small></button>';
+    return '<button type="button" class="kpi-card pos-' + pp.cls + '" data-pos="' + esc(pp.key) + '" aria-pressed="' + (state.filter.pozice === pp.key) + '">' +
+      '<div class="kpi-label">' + esc(pp.label) + '</div><div class="kpi-value' + (n ? '' : ' zero') + '">' + fmtNum(n) + '</div><small>' + esc(grily(n)) + '</small></button>';
   }).join('');
-  html += '<div class="kpi-card pos-bez"><div class="kpi-label">bez srovnání</div><div class="kpi-value">' + fmtNum(poz.bez_srovnani || 0) + '</div><small>žádná čerstvá nabídka</small></div>';
+  var nb = poz.bez_srovnani || 0;
+  html += '<button type="button" class="kpi-card pos-bez" data-pos="' + POS_BEZ + '" aria-pressed="' + (state.filter.pozice === POS_BEZ) + '">' +
+    '<div class="kpi-label">bez porovnání</div><div class="kpi-value' + (nb ? '' : ' zero') + '">' + fmtNum(nb) + '</div><small>' + esc(grily(nb)) + ', zatím žádná ověřená nabídka</small></button>';
   $('kpiPos').innerHTML = html;
   $('kpiPos').querySelectorAll('button[data-pos]').forEach(function(b){
     b.addEventListener('click', function(){
-      var v = b.getAttribute('data-pos');
-      state.filter.pozice = state.filter.pozice === v ? '' : v;
+      var val = b.getAttribute('data-pos');
+      state.filter.pozice = state.filter.pozice === val ? '' : val;
       $('fPoz').value = state.filter.pozice;
       renderSummary(); renderProducts();
     });
   });
-  // upozornění: výpadky, blokace
+
+  // upozornění: výpadky, stará data, podezřelé nabídky
   var bad = d.konkurenti.filter(function(k){ return k.vypadek; });
+  var waiting = d.konkurenti.filter(function(k){ return !k.stazeno_ok; });
   var parts = [];
-  if (bad.length) parts.push('<strong>Výpadek:</strong> ' + bad.map(function(k){ return esc(k.konkurent) + (k.stav === 'blokováno' ? ' (web blokuje přístup)' : ''); }).join(', ') + '. Jejich poslední známé ceny zůstávají s datem.');
+  if (bad.length) parts.push('<strong>Výpadek:</strong> ' + bad.map(function(k){ return esc(k.konkurent) + (k.stav === 'blokováno' ? ' (web blokuje přístup)' : ''); }).join(', ') + '. Poslední známé ceny zůstávají s datem načtení.');
+  if (waiting.length && waiting.length < d.konkurenti.length) parts.push('<strong>Načítání běží:</strong> ' + waiting.map(function(k){ return esc(k.konkurent); }).join(', ') + ' ' + (waiting.length === 1 ? 'zatím nemá' : 'zatím nemají') + ' načtené ceny, porovnání se doplní v dalších dnech.');
   var ageH = (new Date(d.generated).getTime() - new Date(stamp).getTime()) / 3600000;
-  if (d.snimek && ageH > 48) parts.push('<strong>Data jsou starší:</strong> přehled se naposledy přepočítal ' + esc(fmtDate(d.snimek)) + ' (poslední běh nenašel žádné čerstvé ověřené nabídky konkurentů).');
-  if (d.karantena_pocet) parts.push('<strong>Karanténa:</strong> ' + fmtNum(d.karantena_pocet) + ' ' + plural(d.karantena_pocet, 'nabídka', 'nabídky', 'nabídek') + ' vypadá chybně (viz rozbalené produkty) a do minima se nepočítá.');
+  if (d.snimek && ageH > 48) parts.push('<strong>Data jsou starší:</strong> přehled se naposledy přepočítal ' + esc(fmtDate(d.snimek)) + ' (od té doby se nenašly žádné čerstvé ověřené nabídky konkurence).');
+  if (d.karantena_pocet) parts.push('<strong>Podezřelé ceny:</strong> ' + fmtNum(d.karantena_pocet) + ' ' + plural(d.karantena_pocet, 'nabídka', 'nabídky', 'nabídek') + ' konkurence se liší od naší ceny o víc než ' + esc((d.nastaveni && d.nastaveni.quarantine_pct) || 50) + ' % nebo má chybnou cenu, do nejnižší ceny se nepočítá (v detailu grilu je označená).');
   $('notice').hidden = !parts.length;
   $('notice').innerHTML = parts.join('<br>');
 }
@@ -741,7 +832,8 @@ function initFilters(){
   var sel = $('fRada');
   sel.innerHTML = '<option value="">Všechny řady</option>' + Object.keys(rady).sort().map(function(r){ return '<option>' + esc(r) + '</option>'; }).join('');
   var ps = $('fPoz');
-  ps.innerHTML = '<option value="">Všechny pozice</option>' + POS.map(function(p){ return '<option>' + esc(p.label) + '</option>'; }).join('');
+  ps.innerHTML = '<option value="">Všechny pozice</option>' + POS.map(function(p){ return '<option value="' + esc(p.key) + '">' + esc(p.label) + '</option>'; }).join('') +
+    '<option value="' + POS_BEZ + '">bez porovnání</option>';
   $('fSearch').oninput = function(){ state.filter.q = this.value; renderProducts(); };
   sel.onchange = function(){ state.filter.rada = this.value; renderProducts(); };
   ps.onchange = function(){ state.filter.pozice = this.value; renderSummary(); renderProducts(); };
@@ -750,19 +842,18 @@ function initFilters(){
     state.filter = { q: '', rada: '', pozice: '', cmp: false };
     $('fSearch').value = ''; sel.value = ''; ps.value = ''; $('fCmp').checked = false;
     renderSummary(); renderProducts();
+    $('fSearch').focus();
   };
 }
 
 var COLS = [
-  { key: 'nazev', label: 'Gril', cls: '' },
+  { key: 'nazev', label: 'Gril', cls: 'name' },
   { key: 'cena', label: 'Naše cena', cls: 'num' },
-  { key: 'min_cena', label: 'Min. trhu', cls: 'num' },
-  { key: 'kdo', label: 'Kdo', cls: '', sort: false },
-  { key: 'rozdil_kc', label: 'Rozdíl Kč', cls: 'num' },
-  { key: 'rozdil_pct', label: 'Rozdíl %', cls: 'num' },
+  { key: 'min_cena', label: 'Nejnižší u konkurence', cls: 'num' },
+  { key: 'kdo', label: 'Kdo ji má', cls: 'kdo', sort: false },
+  { key: 'rozdil_pct', label: 'Rozdíl', cls: 'num diff' },
   { key: 'pozice', label: 'Pozice', cls: '' },
-  { key: 'pocet_obchodu', label: 'Obchodů', cls: 'num' },
-  { key: 'zmena_min', label: 'Změna min.', cls: 'num' }
+  { key: 'pocet_obchodu', label: 'Obchodů s nabídkou', cls: 'num hide-m' }
 ];
 var POS_ORDER = { 'nejlevnější': 0, 'shoda': 1, 'do 2 %': 2, '2-5 %': 3, 'nad 5 %': 4 };
 
@@ -773,11 +864,17 @@ function sortVal(p, key){
   return isNum(v) ? v : null;
 }
 
+function isDefaultFilter(){
+  var f = state.filter;
+  return !f.q && !f.rada && !f.pozice && !f.cmp;
+}
+
 function filteredProducts(){
   var f = state.filter, q = norm(f.q);
   var list = state.data.produkty.filter(function(p){
     if (f.rada && p.rada !== f.rada) return false;
-    if (f.pozice && p.pozice !== f.pozice) return false;
+    if (f.pozice === POS_BEZ){ if (p.pozice) return false; }
+    else if (f.pozice && p.pozice !== f.pozice) return false;
     if (f.cmp && !p.pozice) return false;
     if (q && norm(p.nazev + ' ' + p.rada + ' ' + p.gid).indexOf(q) < 0) return false;
     return true;
@@ -795,55 +892,92 @@ function filteredProducts(){
   return list;
 }
 
+// Věta "naše cena je o X Kč vyšší / nižší / stejná" pro detail nabídky
+function ourVsTheirs(our, their){
+  if (!isNum(our) || !isNum(their)) return dash();
+  var diff = our - their;
+  if (Math.abs(diff) < 0.5) return '<span class="diff-zero">stejná</span>';
+  return '<span class="' + diffCls(diff) + '">o ' + fmtNum(Math.abs(diff)) + ' Kč ' + (diff > 0 ? 'vyšší' : 'nižší') + '</span>';
+}
+
 function offersTable(p){
-  if (!p.nabidky || !p.nabidky.length) return '<p class="muted" style="padding:10px 0">Žádná spárovaná nabídka konkurentů.</p>';
   var maxAge = (state.data.nastaveni && state.data.nastaveni.max_age_days) || 8;
+  var head = '';
+  if (isNum(p.zmena_min) && p.zmena_min !== 0) head += '<span>Nejnižší cena u konkurence se od minulé aktualizace změnila o ' + signedKc(p.zmena_min) + '</span>';
+  if (p.akce && isNum(p.cena_bez_akce) && p.cena_bez_akce !== p.cena) head += '<span>Naše akční cena ' + fmtNum(p.cena) + ' Kč, běžná ' + fmtNum(p.cena_bez_akce) + ' Kč</span>';
+  if (!p.nabidky || !p.nabidky.length) return (head ? '<div class="detail-head">' + head + '</div>' : '') + '<p class="muted" style="padding:10px 0">Zatím žádná ověřená nabídka konkurence pro tento gril.</p>';
   var rows = p.nabidky.map(function(n){
-    var diff = isNum(n.cena) && isNum(p.cena) ? p.cena - n.cena : null;
     var isMin = isNum(n.cena) && isNum(p.min_cena) && Math.abs(n.cena - p.min_cena) < 0.5 && !n.karantena && n.cerstva;
-    var flags = [];
-    if (n.karantena) flags.push('<span class="badge s-bad">karanténa</span>');
-    else if (!n.cerstva) flags.push('<span class="badge s-off">starší než ' + esc(maxAge) + ' dní</span>');
-    else if (n.stav === 'chyba' || n.stav === 'blokováno') flags.push('<span class="badge s-warn">poslední stažení selhalo</span>');
-    return '<tr><td>' + esc(n.konkurent) + '</td>' +
-      '<td class="num ' + (isMin ? 'best' : '') + '">' + kc(n.cena) + '</td>' +
-      '<td class="num">' + (diff === null ? '<span class="muted">-</span>' : signedKc(-diff)) + '</td>' +
-      '<td>' + availBadge(n.dostupnost) + '</td><td>' + esc(fmtDate(n.stazeno)) + '</td>' +
+    var counts = true, flags = [];
+    if (n.karantena){ flags.push('<span class="badge s-bad">podezřelá cena</span>'); counts = false; }
+    else if (!n.cerstva){ flags.push('<span class="badge s-off">starší než ' + esc(maxAge) + ' dní</span>'); counts = false; }
+    else if (n.stav === 'chyba' || n.stav === 'blokováno') flags.push('<span class="badge s-warn">web naposledy nešel načíst</span>');
+    if (n.dostupnost === 'není skladem') counts = false;
+    if (!counts) flags.push('<span class="muted">nepočítá se</span>');
+    return '<tr' + (counts ? '' : ' class="off"') + '><td' + (counts ? '' : ' class="off"') + '>' + esc(n.konkurent) + '</td>' +
+      '<td class="num ' + (isMin ? 'best' : (counts ? '' : 'off')) + '">' + kc(n.cena) + (isMin ? ' <span class="sr-only">(nejnižší)</span>' : '') + '</td>' +
+      '<td>' + ourVsTheirs(p.cena, n.cena) + '</td>' +
+      '<td>' + availBadge(n.dostupnost) + '</td><td class="muted date">' + esc(fmtDate(n.stazeno)) + '</td>' +
       '<td>' + flags.join(' ') + '</td>' +
-      '<td><a href="' + esc(safeUrl(n.url)) + '" target="_blank" rel="noopener noreferrer">stránka</a></td></tr>';
+      '<td><a href="' + esc(safeUrl(n.url)) + '" target="_blank" rel="noopener noreferrer">otevřít<span class="sr-only"> nabídku ' + esc(n.konkurent) + '</span></a></td></tr>';
   }).join('');
-  return '<table><thead><tr><th>Konkurent</th><th class="num">Cena</th><th class="num">Oproti nám</th><th>Dostupnost</th><th>Staženo</th><th>Poznámka</th><th>Odkaz</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  return (head ? '<div class="detail-head">' + head + '</div>' : '') +
+    '<div class="detail-scroll"><table><caption class="sr-only">Ceny ' + esc(p.nazev) + ' v obchodech konkurence</caption><thead><tr><th>Obchod</th><th class="num">Jeho cena</th><th>Naše cena je</th><th>Dostupnost</th><th>Načteno</th><th>Poznámka</th><th>Odkaz</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+
+function productRow(p){
+  var open = !!state.open[p.gid];
+  var kk = p.kdo || [];
+  var kdo = kk.length ? esc(kk[0]) + (kk.length > 1 ? '<span class="more">+ ' + (kk.length - 1) + ' ' + esc(plural(kk.length - 1, 'další', 'další', 'dalších')) + '</span>' : '') : dash();
+  var sub = (p.rada ? esc(p.rada) : '') + (p.akce ? '<span class="badge s-warn">akční cena</span>' : '');
+  var tr = '<tr class="prod' + (p.pozice ? '' : ' nocmp') + '"><td class="name"><button type="button" class="toggle" data-gid="' + esc(p.gid) + '" aria-expanded="' + open + '" aria-controls="d-' + esc(p.gid) + '"><span>' + esc(p.nazev) + '</span></button>' +
+    (sub ? '<span class="sub">' + sub + '</span>' : '') + '</td>' +
+    '<td class="num">' + kc(p.cena) + '</td><td class="num">' + kc(p.min_cena) + '</td><td class="kdo"' + (kk.length > 1 ? ' title="' + esc(kk.join(', ')) + '"' : '') + '>' + kdo + '</td>' +
+    '<td class="num diff">' + (isNum(p.rozdil_pct) ? '<span class="pct ' + diffCls(p.rozdil_pct) + '">' + fmtPct(p.rozdil_pct) + '</span><span class="kc">' + (p.rozdil_kc > 0 ? '+' : '') + fmtNum(p.rozdil_kc) + ' Kč</span>' : dash()) + '</td>' +
+    '<td>' + posBadge(p.pozice) + '</td>' +
+    '<td class="num hide-m">' + (p.pokryti_z ? esc(p.pocet_obchodu + ' z ' + p.pokryti_z) : esc(p.pocet_obchodu)) + '</td></tr>';
+  tr += '<tr class="detail" id="d-' + esc(p.gid) + '" data-detail="' + esc(p.gid) + '"' + (open ? '' : ' hidden') + '><td colspan="' + COLS.length + '">' + (open ? offersTable(p) : '') + '</td></tr>';
+  return tr;
 }
 
 function renderProducts(){
   var list = filteredProducts();
   var all = state.data.produkty.length;
-  $('countInfo').textContent = 'Zobrazeno ' + list.length + ' z ' + all + ' ' + plural(all, 'produktu', 'produktů', 'produktů');
+  // v základním pohledu jsou grily bez porovnání sbalené za jedním řádkem, ať tabulka neutopí porovnané grily v pomlčkách
+  var collapse = isDefaultFilter();
+  var noCmp = collapse ? list.filter(function(p){ return !p.pozice; }) : [];
+  var shown = collapse ? list.filter(function(p){ return p.pozice; }) : list;
+  var visible = shown.length + (state.showNoCmp ? noCmp.length : 0);
+  $('countInfo').innerHTML = '<span>Zobrazeno ' + fmtNum(visible) + ' z ' + fmtNum(all) + ' ' + esc(grily(all)) + '</span>' +
+    (noCmp.length && !state.showNoCmp ? '<span>' + fmtNum(noCmp.length) + ' bez porovnání je sbaleno na konci tabulky</span>' : '');
   var head = '<thead><tr>' + COLS.map(function(c){
     var active = state.sort.key === c.key;
     var sortable = c.sort !== false;
-    return '<th class="' + c.cls + (sortable ? '' : ' nosort') + '"' + (sortable ? ' tabindex="0" data-key="' + c.key + '" role="columnheader" aria-sort="' + (active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"' : '') + '>' +
-      esc(c.label) + (active ? '<span class="arrow">' + (state.sort.dir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>';
+    return '<th scope="col" class="' + c.cls + (sortable ? '' : ' nosort') + '"' + (sortable ? ' tabindex="0" data-key="' + c.key + '" aria-sort="' + (active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '" title="Seřadit podle: ' + esc(c.label) + '"' : '') + '>' +
+      esc(c.label) + (active ? '<span class="arrow" aria-hidden="true">' + (state.sort.dir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>';
   }).join('') + '</tr></thead>';
-  var body = list.map(function(p){
-    var open = !!state.open[p.gid];
-    var kk = p.kdo || [];
-    var kdo = kk.length > 2 ? kk.slice(0, 2).join(', ') + ' +' + (kk.length - 2) + ' dalších' : kk.join(', ');
-    var tr = '<tr class="prod"><td class="name"><button type="button" class="toggle" data-gid="' + esc(p.gid) + '" aria-expanded="' + open + '">' + esc(p.nazev) + '</button>' +
-      (p.rada ? '<span class="serie">' + esc(p.rada) + '</span>' : '') + (p.akce ? ' <span class="badge s-warn">akce</span>' : '') + '</td>' +
-      '<td class="num">' + kc(p.cena) + '</td><td class="num">' + kc(p.min_cena) + '</td><td class="kdo">' + (kdo ? esc(kdo) : '<span class="muted">-</span>') + '</td>' +
-      '<td class="num">' + signedKc(p.rozdil_kc) + '</td><td class="num">' + signedPct(p.rozdil_pct) + '</td><td>' + posBadge(p.pozice) + '</td>' +
-      '<td class="num">' + (p.pokryti_z ? esc(p.pocet_obchodu + ' z ' + p.pokryti_z) : esc(p.pocet_obchodu)) + '</td>' +
-      '<td class="num">' + (isNum(p.zmena_min) ? signedKc(p.zmena_min) : '<span class="muted">-</span>') + '</td></tr>';
-    tr += '<tr class="detail" data-detail="' + esc(p.gid) + '"' + (open ? '' : ' hidden') + '><td colspan="' + COLS.length + '">' + (open ? offersTable(p) : '') + '</td></tr>';
-    return tr;
-  }).join('');
-  $('prodTable').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="' + COLS.length + '" class="muted" style="padding:18px">Žádný produkt neodpovídá filtru.</td></tr>') + '</tbody>';
+  var body = shown.map(productRow).join('');
+  if (noCmp.length){
+    var n = noCmp.length;
+    body += '<tr class="expander"><td colspan="' + COLS.length + '"><button type="button" id="showNoCmp" aria-expanded="' + state.showNoCmp + '">' +
+      (state.showNoCmp ? 'Skrýt ' : 'Zobrazit ' + (shown.length ? 'dalších ' : '')) + fmtNum(n) + ' ' + esc(grily(n)) + ' bez porovnání' +
+      (state.showNoCmp ? '' : '<small>Zatím u nich nemáme ověřenou cenu žádného obchodu konkurence.</small>') + '</button></td></tr>';
+    if (state.showNoCmp) body += noCmp.map(productRow).join('');
+  }
+  $('prodTable').innerHTML = '<caption class="sr-only">Ceny grilů Weber ve Flamaru proti nejnižší ceně konkurence</caption>' + head + '<tbody>' + (body || '<tr><td colspan="' + COLS.length + '" class="muted" style="padding:18px">Žádný gril neodpovídá filtru. Zkuste jiný výraz nebo zrušte filtry.</td></tr>') + '</tbody>';
+  var ex = $('showNoCmp');
+  if (ex) ex.addEventListener('click', function(){
+    state.showNoCmp = !state.showNoCmp;
+    renderProducts();
+    var again = $('showNoCmp'); if (again) again.focus();
+  });
   $('prodTable').querySelectorAll('th[data-key]').forEach(function(th){
     var act = function(){
       var k = th.getAttribute('data-key');
       if (state.sort.key === k) state.sort.dir = -state.sort.dir; else state.sort = { key: k, dir: k === 'nazev' ? 1 : -1 };
       renderProducts();
+      var again = $('prodTable').querySelector('th[data-key="' + k + '"]');
+      if (again) again.focus();
     };
     th.addEventListener('click', act);
     th.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); act(); } });
@@ -857,44 +991,40 @@ function renderProducts(){
       if (again) again.focus();
     });
   });
-  // detail se naplní jen u otevřených řádků
-  list.forEach(function(p){
-    if (!state.open[p.gid]) return;
-    var cell = $('prodTable').querySelector('tr[data-detail="' + String(p.gid).replace(/"/g, '') + '"] td');
-    if (cell) cell.innerHTML = offersTable(p);
-  });
 }
 
 // ---------- konkurenti, změny, graf ----------
+var STAV_TEXT = { 'ok': ['s-ok', 'v pořádku'], 'blokováno': ['s-bad', 'web blokuje přístup'], 'chyby': ['s-bad', 'chyby při načítání'], 'chyba': ['s-bad', 'chyby při načítání'], 'vypnuto': ['s-off', 'vypnuto'], 'čeká': ['s-warn', 'čeká na první načtení'] };
 function stateBadge(k){
   var s = k.stav || '';
-  var cls = s === 'ok' ? 's-ok' : (s === 'blokováno' || s === 'chyby' ? 's-bad' : (s === 'vypnuto' ? 's-off' : 's-warn'));
-  return s ? '<span class="badge ' + cls + '">' + esc(s) + '</span>' : '<span class="muted">-</span>';
+  if (!s) return dash();
+  var t = STAV_TEXT[s] || ['s-warn', s];
+  return '<span class="badge ' + t[0] + '">' + esc(t[1]) + '</span>' + (k.vypadek && s !== 'blokováno' ? ' <span class="badge s-bad">výpadek</span>' : '');
 }
 
 function renderCompetitors(){
   var rows = state.data.konkurenti.map(function(k){
-    return '<tr><td><strong>' + esc(k.konkurent) + '</strong></td><td>' + stateBadge(k) + '</td><td>' + esc(fmtDate(k.cas)) + '</td>' +
-      '<td class="num">' + fmtNum(k.sparovano) + '</td><td class="num">' + fmtNum(k.levnejsi) + '</td><td class="num">' + fmtNum(k.shoda) + '</td><td class="num">' + fmtNum(k.drazsi) + '</td>' +
-      '<td class="num">' + (isNum(k.prumer_pct) ? signedPct(k.prumer_pct) : '<span class="muted">-</span>') + '</td>' +
-      '<td class="num">' + fmtNum(k.stazeno_ok) + ' / ' + fmtNum(k.url_celkem) + '</td>' +
-      '<td>' + (k.vypadek ? '<span class="badge s-bad">výpadek</span>' : '<span class="muted">ne</span>') + '</td></tr>';
+    var waiting = !k.stazeno_ok;
+    return '<tr' + (waiting ? ' class="nocmp"' : '') + '><td><strong>' + esc(k.konkurent) + '</strong></td><td>' + stateBadge(k) + '</td><td class="muted date">' + esc(fmtDate(k.cas)) + '</td>' +
+      '<td class="num">' + (waiting ? dash() : fmtNum(k.sparovano)) + '</td><td class="num">' + (waiting ? dash() : fmtNum(k.levnejsi)) + '</td><td class="num">' + (waiting ? dash() : fmtNum(k.shoda)) + '</td><td class="num">' + (waiting ? dash() : fmtNum(k.drazsi)) + '</td>' +
+      '<td class="num">' + (isNum(k.prumer_pct) && !waiting ? signedPct(k.prumer_pct) : dash()) + '</td>' +
+      '<td class="num">' + (k.url_celkem ? fmtNum(k.stazeno_ok) + ' z ' + fmtNum(k.url_celkem) : dash()) + '</td></tr>';
   }).join('');
-  $('compTable').innerHTML = '<thead><tr><th class="nosort">Konkurent</th><th class="nosort">Stav běhu</th><th class="nosort">Poslední běh</th><th class="num nosort">Spárováno</th><th class="num nosort">Levnější než my</th><th class="num nosort">Shoda</th><th class="num nosort">Dražší</th><th class="num nosort">Průměrný rozdíl</th><th class="num nosort">Staženo / URL</th><th class="nosort">Výpadek</th></tr></thead><tbody>' +
-    (rows || '<tr><td colspan="10" class="muted" style="padding:18px">Žádný konkurent.</td></tr>') + '</tbody>';
+  $('compTable').innerHTML = '<caption class="sr-only">Obchody konkurence a stav načítání</caption><thead><tr><th scope="col" class="nosort">Obchod</th><th scope="col" class="nosort">Stav</th><th scope="col" class="nosort">Naposledy načteno</th><th scope="col" class="num nosort">Porovnáno grilů</th><th scope="col" class="num nosort">Levnější než my</th><th scope="col" class="num nosort">Stejná cena</th><th scope="col" class="num nosort">Dražší než my</th><th scope="col" class="num nosort">Náš průměrný rozdíl</th><th scope="col" class="num nosort">Načtené stránky</th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="9" class="muted" style="padding:18px">Zatím není nastaven žádný obchod konkurence.</td></tr>') + '</tbody>';
 }
 
 function renderChanges(){
   var z = state.data.zmeny || [];
-  $('chgSub').textContent = z.length ? 'porovnání posledních dvou snímků (' + fmtDay(z[0].od) + ' a ' + fmtDay(z[0].do) + ')' : '';
+  $('chgSub').textContent = z.length ? fmtDay(z[0].od) + ' proti ' + fmtDay(z[0].do) : '';
   var rows = z.map(function(c){
-    var dir = c.rozdil < 0 ? 'zlevnil' : 'zdražil';
-    if (c.konkurent === 'Flamaro') dir = c.rozdil < 0 ? 'my jsme zlevnili' : 'my jsme zdražili';
-    return '<tr><td>' + esc(c.nazev) + '</td><td>' + esc(c.konkurent) + '</td><td class="num"><span class="old">' + fmtNum(c.stara) + ' Kč</span> ' + fmtNum(c.nova) + ' Kč</td>' +
-      '<td class="num">' + signedKc(c.rozdil) + '</td><td class="num">' + signedPct(c.rozdil_pct) + '</td><td>' + esc(dir) + '</td></tr>';
+    var mine = c.konkurent === 'Flamaro';
+    var dir = c.rozdil < 0 ? (mine ? 'my jsme zlevnili' : 'zlevnil') : (mine ? 'my jsme zdražili' : 'zdražil');
+    return '<tr><td class="gril">' + esc(c.nazev) + '</td><td>' + (mine ? '<strong>Flamaro (my)</strong>' : esc(c.konkurent)) + '</td><td class="num"><span class="old">' + fmtNum(c.stara) + ' Kč</span> ' + fmtNum(c.nova) + ' Kč</td>' +
+      '<td class="num">' + signedKc(c.rozdil) + '</td><td class="num">' + signedPct(c.rozdil_pct) + '</td><td class="date">' + esc(dir) + '</td></tr>';
   }).join('');
-  $('chgTable').innerHTML = '<thead><tr><th class="nosort">Gril</th><th class="nosort">Kdo</th><th class="num nosort">Cena (dříve → nyní)</th><th class="num nosort">Rozdíl</th><th class="num nosort">Rozdíl %</th><th class="nosort"></th></tr></thead><tbody>' +
-    (rows || '<tr><td colspan="6" class="muted" style="padding:18px">Mezi posledními snímky se žádná cena nezměnila (nebo je k dispozici jen jeden snímek).</td></tr>') + '</tbody>';
+  $('chgTable').innerHTML = '<caption class="sr-only">Změny cen od minulé aktualizace</caption><thead><tr><th scope="col" class="nosort">Gril</th><th scope="col" class="nosort">Obchod</th><th scope="col" class="num nosort">Cena dříve a nyní</th><th scope="col" class="num nosort">Změna</th><th scope="col" class="num nosort">Změna v %</th><th scope="col" class="nosort"><span class="sr-only">Směr změny</span></th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="6" class="muted" style="padding:18px">Od minulé aktualizace se žádná cena nezměnila, nebo je zatím k dispozici jen jedna aktualizace.</td></tr>') + '</tbody>';
 }
 
 function renderHistory(){
@@ -902,28 +1032,34 @@ function renderHistory(){
   var h = state.data.historie || {};
   var days = Object.keys(h).sort();
   var note = $('histNote');
+  var wrap = $('histChart').parentNode;
   if (days.length < 2){
-    note.textContent = 'Graf se objeví, až bude k dispozici aspoň několik denních snímků.';
+    wrap.hidden = true;   // prázdný rámeček grafu nic neříká, stačí věta
+    note.textContent = 'Graf se objeví, až bude k dispozici aspoň několik denních aktualizací. Zatím ' + (days.length ? 'je jen jedna' : 'není žádná') + '.';
     return;
   }
-  note.textContent = 'Podíl = grily, kde je naše cena nejnižší nebo ve shodě s nejnižší. Medián rozdílu = prostřední hodnota (naše cena − minimum trhu) / minimum, záporné číslo znamená, že jsme pod trhem. Zahrnuje jen grily, u kterých byla ověřená nabídka konkurenta.';
+  wrap.hidden = false;
+  var last = h[days[days.length - 1]];
+  note.textContent = 'Podíl = grily, kde je naše cena stejná nebo nižší než nejnižší cena konkurence. Typický rozdíl = medián rozdílu naší ceny proti nejnižší ceně konkurence, záporné číslo znamená, že jsme levnější. Počítá se jen z grilů s ověřenou nabídkou konkurence.' +
+    (isNum(last.podil_nejlevnejsich) ? ' Poslední den: podíl ' + String(last.podil_nejlevnejsich).replace('.', ',') + ' %' + (isNum(last.median_diff_pct) ? ', typický rozdíl ' + fmtPct(last.median_diff_pct) : '') + '.' : '');
   var labels = days.map(fmtDay);
   var share = days.map(function(d){ return isNum(h[d].podil_nejlevnejsich) ? h[d].podil_nejlevnejsich : null; });
   var med = days.map(function(d){ return isNum(h[d].median_diff_pct) ? h[d].median_diff_pct : null; });
   var ch = new Chart($('histChart'), {
     type: 'line',
     data: { labels: labels, datasets: [
-      { label: 'Podíl nejlevnějších nebo ve shodě (%)', data: share, borderColor: '#083027', backgroundColor: '#083027', yAxisID: 'y', borderWidth: 2, pointRadius: 2, tension: .2, spanGaps: true },
-      { label: 'Medián rozdílu proti minimu trhu (%)', data: med, borderColor: '#ff4a21', backgroundColor: '#ff4a21', yAxisID: 'y2', borderWidth: 2, pointRadius: 2, tension: .2, spanGaps: true, borderDash: [6, 4] }
+      { label: 'Podíl grilů, kde nejsme dražší (%)', data: share, borderColor: '#083027', backgroundColor: '#083027', yAxisID: 'y', borderWidth: 2, pointRadius: 2, tension: .2, spanGaps: true },
+      { label: 'Typický rozdíl proti nejnižší ceně (%)', data: med, borderColor: '#e63e18', backgroundColor: '#e63e18', yAxisID: 'y2', borderWidth: 2, pointRadius: 2, tension: .2, spanGaps: true, borderDash: [6, 4] }
     ] },
     options: {
       responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      animation: REDUCED_MOTION ? false : undefined,
       plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } },
         tooltip: { callbacks: { label: function(c){ return c.dataset.label + ': ' + (c.parsed.y == null ? '-' : String(c.parsed.y).replace('.', ',') + ' %'); } } } },
       scales: {
         x: { grid: { color: C_GRID }, ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 10 } },
         y: { position: 'left', min: 0, max: 100, grid: { color: C_GRID }, title: { display: true, text: 'Podíl (%)' } },
-        y2: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Medián rozdílu (%)' } }
+        y2: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Typický rozdíl (%)' } }
       }
     }
   });
@@ -940,7 +1076,9 @@ function renderAll(){
 
 $('methLink').addEventListener('click', function(e){
   e.preventDefault();
-  var d = $('metodika'); d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  var d = $('metodika'); d.open = true;
+  d.scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'start' });
+  d.querySelector('summary').focus();
 });
 
 load();
