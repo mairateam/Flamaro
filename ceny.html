@@ -252,46 +252,127 @@ main,.card,.kpi-card,.tbl-scroll{min-width:0}
 .kpi-card.pos-nad5{border-top-color:var(--orange-text)}
 .kpi-card.pos-bez{border-top-color:var(--muted)}
 .kpi-card .kpi-value.zero{color:var(--ink-2);font-weight:600}
-button.kpi-card{font:inherit;text-align:left;cursor:pointer;color:inherit;width:100%;transition:box-shadow .15s ease,background-color .15s ease}
+/* Karty pozic jsou zároveň jediný filtr pozice: stisknutá karta omezí tabulku, druhé kliknutí filtr zruší */
+button.kpi-card{font:inherit;text-align:left;cursor:pointer;color:inherit;width:100%;position:relative;transition:box-shadow .15s ease,background-color .15s ease}
 button.kpi-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.16)}
 button.kpi-card:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
 button.kpi-card[aria-pressed="true"]{background:#f3f6f5;box-shadow:inset 0 0 0 2px var(--green)}
+button.kpi-card[aria-pressed="true"]::after{content:'v tabulce';position:absolute;right:10px;top:9px;font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em}
 button.kpi-card small{display:block;color:var(--ink-2);font-size:12px;margin-top:4px}
+.kpi-hint{font-size:12.5px;color:var(--ink-2);margin:-8px 0 0}
+.verdict a{color:var(--green);font-weight:600;font-size:14px;white-space:nowrap}
+.verdict a:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
 .notice{margin:0 0 20px;padding:12px 16px;border-left:4px solid var(--orange);background:#fff;box-shadow:var(--shadow-sm);font-size:13px;line-height:1.6;max-width:80ch}
 .notice strong{color:var(--green)}
 .notice[hidden]{display:none}
-.filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px}
+/* Filtry: hledání + řada vlevo, počet zobrazených a „Zrušit filtry“ (jen když je co rušit) vpravo */
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 10px}
 .filters input[type=search],.filters select{min-height:40px;border:2px solid var(--grey);border-radius:0;background:var(--white);color:var(--ink);font-family:var(--font);font-size:13px;padding:8px 12px;max-width:100%}
-.filters input[type=search]{flex:1 1 240px;min-width:0}
+.filters input[type=search]{flex:1 1 220px;max-width:340px;min-width:0}
 .filters input:focus-visible,.filters select:focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-color:var(--orange)}
-.filters label.chk{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;min-height:40px}
-.filters label.chk input{accent-color:var(--orange);width:16px;height:16px}
 .fbtn{min-height:40px;border:2px solid var(--grey);border-radius:0;background:var(--white);color:var(--ink);font-family:var(--font);font-size:13px;padding:8px 12px;font-weight:600;cursor:pointer}
 .fbtn:hover,.fbtn:focus-visible{border-color:var(--orange);outline:none}
-.count-info{font-size:13px;color:var(--ink-2);margin:0 0 8px;display:flex;flex-wrap:wrap;gap:4px 16px}
-.scroll-hint{display:none;font-size:12px;color:var(--ink-2);margin:0 0 6px}
+.fbtn[hidden]{display:none}
+.count-info{font-size:13px;color:var(--ink-2);margin-left:auto;display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+.count-info strong{color:var(--ink);font-weight:600}
+.count-info .fbtn{min-height:32px;padding:4px 10px;font-size:12.5px}
+.scroll-hint{font-size:12px;color:var(--ink-2);margin:6px 0 0}
+.scroll-hint[hidden]{display:none}
 table.pt{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
-table.pt thead th{position:sticky;top:0;z-index:2;background:#e6e6e6;padding:10px 12px;text-align:left;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;line-height:1.3;vertical-align:bottom;cursor:pointer;user-select:none}
-table.pt thead th.nosort{cursor:default}
-table.pt thead th:hover:not(.nosort){color:var(--green)}
-table.pt thead th:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+table.pt thead th{position:sticky;top:0;z-index:2;background:#e6e6e6;padding:10px 12px;text-align:left;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;line-height:1.3;vertical-align:bottom;user-select:none}
+table.pt thead th[data-key]{cursor:pointer}
+table.pt thead th[data-key]:hover{color:var(--green);background:#dcdcdc}
+table.pt thead th[aria-sort="ascending"],table.pt thead th[aria-sort="descending"]{color:var(--green)}
+/* tlačítko řazení v hlavičce: fokus zeleně (oranžová má na šedé hlavičce jen 2,6:1) */
+table.pt thead th button.sortbtn{all:unset;cursor:pointer;display:inline;font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit}
+table.pt thead th button.sortbtn:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+/* název grilu / obchodu je hlavička řádku: vzhled jako běžná buňka */
+table.pt tbody th{font-weight:inherit;text-align:left}
 table.pt th.num,table.pt td.num{text-align:right}
 table.pt td.num,table.pt td.date{white-space:nowrap}
 table.pt td.gril{min-width:200px}
-table.pt thead th .arrow{font-size:10px;color:var(--orange-text);margin-left:4px}
-table.pt tbody td{padding:10px 12px;border-bottom:1px solid var(--grey);vertical-align:middle}
-table.pt tbody tr.prod:hover td{background:#f7f7f7}
-table.pt tbody tr.nocmp td{color:var(--ink-2)}
+/* Indikátor řazení: slabá šipka na každém řaditelném sloupci, plná oranžová na aktivním */
+table.pt thead th .arrow{display:inline-block;font-size:10px;margin-left:3px;color:var(--ink-2);opacity:.5;vertical-align:middle}
+table.pt thead th[aria-sort="ascending"] .arrow,table.pt thead th[aria-sort="descending"] .arrow{color:var(--orange-text);opacity:1}
+table.pt tbody td,table.pt tbody th{padding:10px 12px;border-bottom:1px solid var(--grey);vertical-align:middle}
+table.pt tbody tr.prod:hover td,table.pt tbody tr.prod:hover th{background:#f7f7f7}
+table.pt tbody tr.nocmp td,table.pt tbody tr.nocmp th{color:var(--ink-2)}
 table.pt tbody tr.nocmp td .toggle{color:var(--ink);font-weight:500}
-table.pt td.name{min-width:260px;max-width:420px}
+table.pt tbody .name{min-width:260px;max-width:420px}
+/* ---- matice grilů: jeden sloupec na obchod (jen tabulka #prodTable) ---- */
+/* Stránka drží jednu osu 1180 px. Sloupce jsou kompaktní, ať se 8 až 9 obchodů vejde; když se přesto nevejdou (víc obchodů, užší okno),
+   tabulka se posouvá ve vlastním rámečku (třída scrolls přidaná skriptem) a hlavička i název grilu zůstávají přilepené. */
+table.mx{font-size:12.5px}
+table.mx thead th{padding:8px 6px;line-height:1.25}
+table.mx thead th.shop{text-transform:none;letter-spacing:0;font-size:11.5px;text-align:right;min-width:52px;padding-left:5px;padding-right:5px}
+table.mx thead th.shop small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-2);text-transform:none;letter-spacing:0;margin-top:2px}
+table.mx thead th.our{min-width:60px}
+table.mx thead th.diff{min-width:60px}
+table.mx thead th.pos{min-width:80px}
+table.mx td.pos{padding-right:8px}
+table.mx td.pos .badge{padding:2px 6px}
+table.mx tbody td,table.mx tbody th{padding:6px 6px}
+table.mx .name{min-width:176px;max-width:320px;padding-left:12px;padding-right:8px}
+/* Název grilu zůstává přilepený vlevo, když se tabulka posouvá */
+table.mx .name{position:sticky;left:0;z-index:1;background:#fff;border-right:1px solid var(--grey)}
+table.mx thead th.name{z-index:3;background:#e6e6e6}
+table.mx tbody tr.prod:hover .name{background:#f7f7f7}
+table.mx td.our{font-weight:700;white-space:nowrap;text-align:right}
+table.mx td.shop{text-align:right;white-space:nowrap;line-height:1.2;vertical-align:middle;padding:0}
+table.mx td.shop.none{background:#fafafa}
+table.mx tbody tr.prod:hover td.shop.none{background:#f3f3f3}
+/* celá buňka je odkaz na nabídku (cíl dotyku přes celou výšku řádku) */
+table.mx td.shop .pc{display:block;box-sizing:border-box;min-height:40px;padding:6px 5px;text-decoration:none;color:inherit}
+table.mx td.shop a.pc:hover{text-decoration:underline;background:rgba(0,0,0,.04)}
+table.mx td.shop .pc:focus-visible{outline:2px solid var(--orange);outline-offset:-2px}
+table.mx td.shop .pc small{display:block;font-size:10.5px;font-weight:600;margin-top:2px;letter-spacing:0}
+/* vztah ceny obchodu k naší ceně: nižší než my = oranžová (jsme dražší), vyšší = zelená (jsme levnější), stejná = neutrální;
+   znaménko pod cenou nese informaci i bez barvy */
+table.mx td.shop.lo .pc{color:var(--orange-text)}
+table.mx td.shop.hi .pc{color:var(--green)}
+table.mx td.shop.eq .pc{color:var(--ink)}
+table.mx td.shop.eq .pc small{color:var(--ink-2);font-weight:500}
+/* nejnižší započtená cena v řádku, když se liší od naší: tučně a s podkladem (oranžový = je pod námi, zelený = jsme levnější).
+   Při shodě s naší cenou (nejčastější případ) se nic nezvýrazňuje, ať tabulka nesvítí. */
+table.mx td.shop.min.lo .pc,table.mx td.shop.min.hi .pc{font-weight:800}
+table.mx td.shop.min.lo{background:var(--neg-bg)}
+table.mx td.shop.min.hi{background:var(--pos-bg)}
+table.mx tbody tr.prod:hover td.shop.min.lo{background:#ffded5}
+table.mx tbody tr.prod:hover td.shop.min.hi{background:#d8e8df}
+/* nabídka, která se nepočítá (není skladem, stará, podezřelá): ztlumeně, s důvodem pod cenou */
+table.mx td.shop.off .pc{color:var(--ink-2);font-weight:400}
+table.mx td.shop.off .pc small{color:var(--ink-2);font-weight:500;font-style:italic}
+/* sloupec, podle kterého je seřazeno, má jemný podklad, ať se v osmi stejných sloupcích neztratí */
+table.mx td.sorted:not(.min):not(.none){background:#f4f4f4}
+table.mx tbody tr.prod:hover td.sorted:not(.min):not(.none){background:#ececec}
+table.mx td.diff{text-align:right}
+table.mx td.diff .kc{font-size:11.5px}
+/* Legenda: jedna věta s ukázkami přímo v textu */
+.legend{font-size:12.5px;color:var(--ink-2);line-height:2;margin:0 0 6px;max-width:none}
+.legend .sw{display:inline-block;padding:0 6px;border:1px solid var(--grey);background:#fff;color:var(--ink);font-variant-numeric:tabular-nums;font-size:12px;line-height:1.5;margin:0 2px;white-space:nowrap;vertical-align:baseline}
+.legend .sw b{font-size:10.5px;font-weight:700;margin-left:3px}
+.legend .sw.lo,.legend .sw.lo b{color:var(--orange-text)}
+.legend .sw.hi,.legend .sw.hi b{color:var(--green)}
+.legend .sw.min{font-weight:800;background:var(--neg-bg);color:var(--orange-text);border-color:transparent}
+.legend .sw.off{color:var(--ink-2)}
+.legend .sw.off i{font-size:10.5px;font-weight:500}
+.legend .sw.none{background:#fafafa;min-width:30px;height:16px;vertical-align:middle}
+/* Akce u konkurenta: malý štítek pod cenou (text nese informaci, barva jen doplňuje; 7a5200 na fff1d6 = 6,5:1).
+   Původní cena a pokles za 30 dní jsou jen v tooltipu, pro čtečku a v rozbaleném detailu, ať matice nekřičí. */
+table.mx td.shop .pc small.akce,.legend .sw b.akce{display:inline-block;font-size:10px;font-weight:700;font-style:normal;color:#7a5200;background:#fff1d6;padding:0 4px;margin-top:3px;letter-spacing:0;white-space:nowrap;line-height:1.5;border-radius:2px}
+table.mx td.shop .pc small.akce{display:table;margin-left:auto}   /* vlastní řádek pod cenou, zarovnaný vpravo, široký jen jako text */
+.legend .sw b.akce{margin:0 0 0 4px;vertical-align:baseline}
+table.pt tr.detail td.akce{white-space:normal;min-width:160px}
+.filters label.chk{display:inline-flex;align-items:center;gap:8px;min-height:40px;font-size:13px;cursor:pointer;padding:0 4px;color:var(--ink);user-select:none}
+.filters label.chk input{width:18px;height:18px;margin:0;accent-color:var(--green);cursor:pointer}
+.filters label.chk:focus-within{outline:2px solid var(--orange);outline-offset:2px}
+.filters label.chk .muted{font-weight:400}
 table.pt .toggle{all:unset;cursor:pointer;display:inline-flex;align-items:flex-start;gap:8px;color:var(--ink);font-weight:600;line-height:1.35;min-height:24px}
 table.pt .toggle::before{content:'▸';color:var(--orange);font-size:13px;flex:none;line-height:1.35}
 table.pt .toggle[aria-expanded="true"]::before{content:'▾'}
 table.pt .toggle:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
 table.pt .sub{display:block;margin:3px 0 0 21px;font-size:12px;color:var(--ink-2);font-weight:400}
 table.pt .sub .badge{margin-left:6px;vertical-align:middle}
-table.pt td.kdo{white-space:nowrap;color:var(--ink)}
-table.pt td.kdo .more{display:block;font-size:12px;color:var(--ink-2)}
 table.pt td.diff{white-space:nowrap}
 table.pt td.diff .pct{display:block;font-weight:700}
 table.pt td.diff .kc{display:block;font-size:12px;color:var(--ink-2)}
@@ -330,28 +411,52 @@ table.pt tr.expander small{display:block;font-weight:400;color:var(--ink-2);marg
 .muted{color:var(--ink-2)}
 .dash{color:var(--muted)}
 .old{color:var(--ink-2);text-decoration:line-through;margin-right:4px;font-weight:400}
-.tbl-scroll{overflow-x:auto;border:1px solid var(--grey);max-width:100%}
+/* position:relative: texty jen pro čtečku (.sr-only, position:absolute) se počítají do rámečku, ne do šířky stránky */
+.tbl-scroll{position:relative;overflow-x:auto;border:1px solid var(--grey);max-width:100%}
 .tbl-scroll.limit{max-height:640px;overflow:auto}
+/* Matice: když se vejde na šířku, rámeček nic neposouvá a hlavička se lepí k hornímu okraji okna.
+   Když se nevejde, posouvá se ve vlastním rámečku s omezenou výškou, ať hlavička i název grilu zůstávají vidět. */
+.tbl-scroll.fits{overflow:visible}
+.tbl-scroll.scrolls{overflow:auto;max-height:min(82vh,900px)}
+#compTable .name{min-width:0;font-weight:700}
 .tbl-note{font-size:12.5px;color:var(--ink-2);margin:8px 0 0;line-height:1.6;max-width:80ch}
 .chart-wrap{height:340px}
 .chart-wrap[hidden]{display:none}
 .table-note{font-size:12.5px;color:var(--ink-2);margin-top:10px;line-height:1.6;max-width:80ch}
 @media(max-width:760px){
   .verdict{font-size:17px}
-  .scroll-hint{display:block}
+  /* Karty pozic jako kompaktní přepínače v jedné řadě po dvou (44 px vysoké) */
+  .kpi-grid.six{display:flex;flex-wrap:wrap;gap:8px}
+  button.kpi-card{width:auto;flex:1 1 calc(50% - 4px);display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;min-height:44px}
+  button.kpi-card .kpi-label{margin:0;text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--ink)}
+  button.kpi-card .kpi-value{font-size:17px}
+  button.kpi-card small,button.kpi-card[aria-pressed="true"]::after{display:none}
+  /* vstupy 16 px, ať iOS při fokusu nepřibližuje stránku */
+  .filters input[type=search]{flex-basis:100%;max-width:none;font-size:16px;min-height:44px}
+  .filters select{flex:1 1 auto;font-size:16px;min-height:44px}
+  .filters label.chk{min-height:44px;font-size:15px;flex:1 1 100%}
+  .filters label.chk input{width:22px;height:22px}
+  .count-info{margin-left:0;flex-basis:100%}
+  .fbtn{min-height:44px}
+  .count-info .fbtn{min-height:36px}
   /* První sloupec zůstává při posouvání tabulky vidět */
-  table.pt td.name,table.pt th.name{position:sticky;left:0;z-index:1;background:#fff;border-right:1px solid var(--grey)}
+  table.pt .name{position:sticky;left:0;z-index:1;background:#fff;border-right:1px solid var(--grey)}
   table.pt thead th.name{z-index:3;background:#e6e6e6}
-  table.pt tbody tr.prod:hover td.name{background:#f7f7f7}
-  table.pt td.name{min-width:200px;max-width:230px}
-  table.pt tbody td{padding:12px 10px}
+  table.pt tbody tr.prod:hover .name{background:#f7f7f7}
+  table.pt tbody .name{min-width:200px;max-width:230px}
+  table.pt tbody td,table.pt tbody th{padding:12px 10px}
   table.pt .hide-m,table.pt .hide-m *{display:none}
   table.pt tr.detail td{padding-left:12px}
-  table.pt tr.detail td.name{position:static;border-right:0}
   table.pt tr.expander td{position:static}
   table.pt tr.expander button{position:sticky;left:0;max-width:calc(100vw - 34px)}
   table.pt td.gril{min-width:170px}
-  .filters label.chk,.fbtn{min-height:44px}
+  #compTable .name{min-width:130px}
+  table.mx{font-size:13px}
+  table.mx .name{min-width:165px;max-width:185px}
+  table.mx tbody td,table.mx tbody th{padding:8px 6px}
+  table.mx td.shop{padding:0}
+  table.mx td.shop .pc{min-height:44px;padding:8px 8px}
+  .legend{line-height:2.1}
   .chart-wrap{height:280px}
 }
 @media(prefers-reduced-motion:reduce){button.kpi-card{transition:none}}
@@ -385,19 +490,26 @@ table.pt tr.expander small{display:block;font-weight:400;color:var(--ink-2);marg
     <p class="verdict" id="verdict"></p>
     <div class="notice" id="notice" hidden></div>
     <div class="kpi-grid six" id="kpiPos" role="group" aria-label="Počet grilů podle pozice proti konkurenci, kliknutím se tabulka omezí na danou pozici"></div>
+    <p class="kpi-hint">Kliknutím na kartu se tabulka grilů omezí na danou skupinu, dalším kliknutím se omezení zruší.</p>
 
-    <h2 class="sec-title">Grily <small>kliknutím na název se rozbalí ceny ve všech obchodech</small></h2>
+    <h2 class="sec-title">Grily <small>v každém sloupci je cena daného obchodu; kliknutím na cenu otevřete jeho nabídku, kliknutím na hlavičku sloupce tabulku seřadíte</small></h2>
     <div class="filters">
       <input type="search" id="fSearch" placeholder="Hledat gril…" aria-label="Hledat gril">
       <select id="fRada" aria-label="Filtr podle řady"><option value="">Všechny řady</option></select>
-      <select id="fPoz" aria-label="Filtr podle pozice"><option value="">Všechny pozice</option></select>
-      <label class="chk"><input type="checkbox" id="fCmp"> Jen porovnané</label>
-      <button type="button" class="fbtn" id="fReset">Zrušit filtry</button>
+      <label class="chk" for="fAkce"><input type="checkbox" id="fAkce"> Jen akce konkurence <span class="muted" id="akceCount"></span></label>
+      <p class="count-info" id="countInfo" aria-live="polite"></p>
     </div>
-    <p class="count-info" id="countInfo" aria-live="polite"></p>
-    <p class="scroll-hint">Tabulku lze posouvat do stran, název grilu zůstává vidět.</p>
-    <div class="tbl-scroll"><table class="pt" id="prodTable"></table></div>
-    <p class="tbl-note">Rozdíl = naše cena proti nejnižší ceně u konkurence. Kladný rozdíl znamená, že jsme dražší. Ceny s DPH.</p>
+    <p class="legend">Pod cenou obchodu je rozdíl proti naší ceně v Kč:
+      <span class="sw lo">7 199<b>-150</b></span> obchod je levnější než my,
+      <span class="sw hi">7 599<b>+250</b></span> dražší,
+      <span class="sw">7 349</span> stejná cena.
+      <span class="sw min">7 199</span> nejnižší cena v řádku, pokud se liší od naší.
+      <span class="sw off">7 349<i>není skl.</i></span> nepočítá se (není skladem, stará nebo podezřelá cena).
+      <span class="sw none" aria-hidden="true"></span> obchod gril nenabízí.
+      <span class="sw lo">7 190<b class="akce">výprodej −17 %</b></span> obchod gril označil jako akci (původní cena v rozbaleném detailu a po najetí myší).</p>
+    <div class="tbl-scroll" id="prodWrap"><table class="pt mx" id="prodTable"></table></div>
+    <p class="scroll-hint" id="scrollHint" hidden>Tabulku lze posouvat do stran i dolů, hlavička a název grilu zůstávají vidět.</p>
+    <p class="tbl-note">Rozdíl = naše cena proti nejnižší započtené ceně konkurence (v řádku zvýrazněná). Kladný rozdíl znamená, že jsme dražší. Obchody jsou seřazené podle počtu porovnaných grilů; kliknutím na obchod se grily seřadí podle rozdílu jeho ceny proti naší. Ceny s DPH.</p>
 
     <h2 class="sec-title">Obchody konkurence <small>kolik grilů jsme porovnali a jak u nich stojíme</small></h2>
     <div class="tbl-scroll"><table class="pt" id="compTable"></table></div>
@@ -423,6 +535,9 @@ table.pt tr.expander small{display:block;font-weight:400;color:var(--ink-2);marg
         <p>Rozdíl = naše cena minus nejnižší cena u konkurence. Kladný rozdíl znamená, že jsme dražší. Pozice: levnější (pod konkurencí), stejná cena (rozdíl do 0,50 Kč), dražší do 2 %, dražší o 2 až 5 %, dražší o víc než 5 %.</p>
         <h3>Vyřazené nabídky a výpadky</h3>
         <p>Nabídka s nulovou cenou, v jiné měně než Kč nebo s cenou o víc než <span data-fill="quar">50</span> % jinou než naše se považuje za podezřelou a nepočítá se (v detailu je označená). Výpadek obchodu znamená, že se z jeho webu načetlo výrazně méně nabídek než minule nebo že web přístup blokuje. Jeho poslední známé ceny zůstávají s datem, po <span data-fill="maxage2">8</span> dnech se přestanou počítat.</p>
+        <h3>Akce u konkurence</h3>
+        <p>Akci poznáme přímo ze stránky produktu: z přeškrtnuté původní ceny, ze slevy v procentech nebo ze štítku (Akce, Výprodej, Sleva), a jen v bloku hlavního produktu, ne z menu ani z doporučených produktů. Původní cena a procento jsou údaj obchodu (u některých obchodů je to ze zákona nejnižší cena za posledních 30 dní před zlevněním), ne náš výpočet. Štítek „s kódem“ nebo „VIP cena“ znamená, že obchod nabízí nižší cenu jen se slevovým kódem nebo po registraci; v tabulce je v takovém případě běžná cena bez kódu a podmíněná cena je v detailu. americkygril.cz a elektrocb.cz akce na stránce neoznačují (poznáme jen zařazení do kategorie Akce a slevy / Výprodej, bez původní ceny). Nižší cena než naše sama o sobě akci neznamená: obchod může gril prodávat levněji trvale. Datum konce akce weby neuvádějí, proto ho neukazujeme.</p>
+        <p>Doplňkový signál: když cena obchodu klesla o 3 % a víc proti jeho nejvyšší ceně za posledních 30 dní, je to v rozbaleném detailu grilu uvedeno jako „zlevněno o X % za 30 dní“, i když obchod akci neoznačil. Trvalé zlevnění vypadá stejně jako akce, a zlevnění před začátkem sledování nevidíme.</p>
         <h3>Pozor</h3>
         <p>Americký GRIL (oficiální distribuce Weber) uvádí doporučené ceny, takže spíš určuje referenční cenu než nejnižší cenu na trhu.</p>
       </div>
@@ -658,17 +773,87 @@ var POS = [
   { key: '2-5 %', label: 'dražší o 2 až 5 %', short: 'dražší 2 až 5 %', cls: 'od2do5', cnt: 'od2do5' },
   { key: 'nad 5 %', label: 'dražší o víc než 5 %', short: 'dražší nad 5 %', cls: 'nad5', cnt: 'nad5' }
 ];
-var POS_BEZ = '__bez';   // hodnota filtru pro grily bez porovnání
+var POS_BEZ = '__bez';       // hodnota filtru pro grily bez porovnání
+var POS_DRAZSI = '__drazsi'; // hodnota filtru pro všechny tři skupiny „dražší“ (odkaz z věty souhrnu)
 var POS_BY_KEY = {};
 POS.forEach(function(p){ POS_BY_KEY[p.key] = p; });
+// hodnoty filtru pozice v URL (#poz=...): bez diakritiky a mezer, ať jde odkaz poslat
+var POS_HASH = { nejlevnejsi: 'nejlevnější', shoda: 'shoda', do2: 'do 2 %', od2do5: '2-5 %', nad5: 'nad 5 %', bez: POS_BEZ, drazsi: POS_DRAZSI };
+function posToHash(v){ for (var k in POS_HASH) if (POS_HASH[k] === v) return k; return ''; }
+function posLabel(v){
+  if (v === POS_BEZ) return 'bez porovnání';
+  if (v === POS_DRAZSI) return 'dražší než konkurence';
+  return POS_BY_KEY[v] ? POS_BY_KEY[v].label : v;
+}
 
 var state = {
   data: null,
   sort: { key: 'rozdil_pct', dir: -1 },
-  filter: { q: '', rada: '', pozice: '', cmp: false },
+  filter: { q: '', rada: '', pozice: '', akce: false },   // akce = jen grily, kde aspoň jeden obchod označil akci
   open: {},
   showNoCmp: false   // rozbalení grilů bez porovnání v základním (nefiltrovaném) pohledu
 };
+
+// ---------- stav filtrů a řazení v URL (#q=...&rada=...&poz=...&akce=1&sort=...&dir=...) ----------
+var lastHash = null;
+function readHash(){
+  var h = location.hash.replace(/^#/, '');
+  var p = new URLSearchParams(h);
+  state.filter.q = p.get('q') || '';
+  state.filter.rada = p.get('rada') || '';
+  state.filter.pozice = POS_HASH[p.get('poz') || ''] || '';
+  state.filter.akce = p.get('akce') === '1';
+  state.sort = { key: 'rozdil_pct', dir: -1 };   // bez parametru v URL platí výchozí řazení (stejná adresa = stejný výsledek)
+  var sort = p.get('sort');
+  var knownShop = sort && sort.indexOf('shop:') === 0 && SHOPS.some(function(s){ return 'shop:' + s.key === sort; });
+  if (sort && (sort === 'nazev' || sort === 'cena' || sort === 'rozdil_pct' || sort === 'pozice' || knownShop)){
+    state.sort.key = sort;
+    state.sort.dir = p.get('dir') === 'asc' ? 1 : (p.get('dir') === 'desc' ? -1 : defaultDir(sort));
+  }
+  lastHash = location.hash;
+}
+function writeHash(){
+  var p = new URLSearchParams();
+  var f = state.filter;
+  if (f.q) p.set('q', f.q);
+  if (f.rada) p.set('rada', f.rada);
+  if (f.pozice) p.set('poz', posToHash(f.pozice));
+  if (f.akce) p.set('akce', '1');
+  if (state.sort.key !== 'rozdil_pct' || state.sort.dir !== -1){ p.set('sort', state.sort.key); p.set('dir', state.sort.dir > 0 ? 'asc' : 'desc'); }
+  var s = p.toString();
+  var next = s ? '#' + s : '';
+  if (next === (location.hash || '')) return;
+  lastHash = next;
+  try { history.replaceState(null, '', location.pathname + location.search + next); } catch(e){ location.hash = next; }
+}
+function defaultDir(key){ return key === 'nazev' || key.indexOf('shop:') === 0 ? 1 : -1; }
+// ovládací prvky podle stavu (po načtení z URL a po „Zrušit filtry“)
+function syncControls(){
+  if ($('fSearch').value !== state.filter.q) $('fSearch').value = state.filter.q;
+  $('fRada').value = state.filter.rada;
+  if ($('fRada').value !== state.filter.rada) state.filter.rada = '';   // řada z URL, která v datech není
+  $('fAkce').checked = state.filter.akce;
+  // bez akcí je přepínač vypnutý, ale zapnutý filtr z URL musí jít vždy odškrtnout
+  $('fAkce').disabled = !state.filter.akce && !state.data.produkty.some(hasAkce);
+}
+
+// ---------- akce u konkurenta ----------
+// Nabídka má akci, když obchod uvedl původní cenu, slevu v % nebo štítek (JSON: puvodni_cena, sleva_pct, akce).
+// Pokles ceny za 30 dní (pokles_pct) je jen doplňkový signál: ukazuje se v tooltipu a v detailu, ne jako štítek.
+function offerAkce(n){
+  if (!n || !(n.akce || isNum(n.sleva_pct) || isNum(n.puvodni_cena))) return null;
+  var st = String(n.akce || '');
+  var base = /v[ýy]prodej|doprodej/i.test(st) ? 'výprodej' : (/k[óo]d/i.test(st) ? 's kódem' : (/vip/i.test(st) ? 'VIP cena' : 'akce'));
+  var pct = isNum(n.sleva_pct) ? ' −' + fmtNum(n.sleva_pct) + ' %' : '';
+  var conditional = base === 's kódem' || base === 'VIP cena';
+  var long = conditional
+    ? 'Nižší cena jen ' + (base === 's kódem' ? 'se slevovým kódem' + (/k[óo]dem\s+(\S+)/i.test(st) ? ' ' + st.match(/k[óo]dem\s+(\S+)/i)[1] : '') : 'po registraci (VIP)') + ', v tabulce je běžná cena'
+    : 'Obchod uvádí akci' + pct + (isNum(n.puvodni_cena) ? ', původní cena ' + fmtNum(n.puvodni_cena) + ' Kč' : '') + (st ? ' (štítek: ' + st + ')' : '');
+  return { label: base + pct, long: long, conditional: conditional };
+}
+function hasAkce(p){ return (p.nabidky || []).some(function(n){ return !!offerAkce(n); }); }
+// pokles za 30 dní jen u nabídek, které se počítají (stará nebo podezřelá cena by hlásila nesmysl)
+function poklesText(n, o){ return isNum(n.pokles_pct) && (!o || o.counts) ? 'zlevněno o ' + fmtNum(n.pokles_pct) + ' % za 30 dní' : ''; }
 
 function $(id){ return document.getElementById(id); }
 function esc(s){ return escapeHtml(s == null ? '' : s); }
@@ -757,12 +942,16 @@ function load(){
 function start(data){
   if (!data || !Array.isArray(data.produkty)){ showStatus('Odpověď serveru nemá očekávaný tvar.', true); return; }
   state.data = data;
-  data.konkurenti = Array.isArray(data.konkurenti) ? data.konkurenti : [];
+  // vypnutý obchod (zapnuto = FALSE) se nikde neukazuje; nový Apps Script ho už do JSON nedává, tohle je pojistka pro starší verzi
+  data.konkurenti = (Array.isArray(data.konkurenti) ? data.konkurenti : []).filter(function(k){ return k && String(k.stav || '') !== 'vypnuto'; });
   showStatus('');
   $('content').hidden = false;
   document.querySelectorAll('[data-fill=maxage],[data-fill=maxage2]').forEach(function(n){ n.textContent = (data.nastaveni && data.nastaveni.max_age_days) || 8; });
   document.querySelectorAll('[data-fill=quar]').forEach(function(n){ n.textContent = (data.nastaveni && data.nastaveni.quarantine_pct) || 50; });
+  buildShops();
   initFilters();
+  readHash();
+  syncControls();
   renderAll();
 }
 
@@ -791,28 +980,45 @@ function renderSummary(){
     v.className = 'verdict';
     v.innerHTML = 'Dražší než konkurence jsme u <strong>' + fmtNum(drazsi) + ' z ' + fmtNum(compared.length) + ' ' + porovnanych(compared.length) + '</strong>' +
       (poz.nad5 ? ', u ' + fmtNum(poz.nad5) + ' o víc než 5 %' : '') + '.' +
-      (worst ? ' Největší rozdíl: ' + esc(worst.nazev) + ' <strong>' + fmtPct(worst.rozdil_pct) + '</strong> (o ' + fmtNum(worst.rozdil_kc) + ' Kč).' : '');
+      (worst ? ' Největší rozdíl: ' + esc(worst.nazev) + ' <strong>' + fmtPct(worst.rozdil_pct) + '</strong> (o ' + fmtNum(worst.rozdil_kc) + ' Kč).' : '') +
+      ' <a href="#poz=drazsi" data-pos="' + POS_DRAZSI + '">Zobrazit ' + (drazsi === 1 ? 'tento gril' : 'těchto ' + fmtNum(drazsi) + ' ' + esc(grily(drazsi))) + ' v tabulce</a>';
   }
 
+  // karty pozic = filtr; stisknutá je jen karta, která filtru přesně odpovídá (souhrnný filtr „dražší“ z věty je vidět v počítadle nad tabulkou)
+  function pressed(key){ return state.filter.pozice === key; }
   var html = POS.map(function(pp){
     var n = poz[pp.cnt] || 0;
-    return '<button type="button" class="kpi-card pos-' + pp.cls + '" data-pos="' + esc(pp.key) + '" aria-pressed="' + (state.filter.pozice === pp.key) + '">' +
+    return '<button type="button" class="kpi-card pos-' + pp.cls + '" data-pos="' + esc(pp.key) + '" aria-pressed="' + pressed(pp.key) + '">' +
       '<div class="kpi-label">' + esc(pp.label) + '</div><div class="kpi-value' + (n ? '' : ' zero') + '">' + fmtNum(n) + '</div><small>' + esc(grily(n)) + '</small></button>';
   }).join('');
   var nb = poz.bez_srovnani || 0;
-  html += '<button type="button" class="kpi-card pos-bez" data-pos="' + POS_BEZ + '" aria-pressed="' + (state.filter.pozice === POS_BEZ) + '">' +
+  html += '<button type="button" class="kpi-card pos-bez" data-pos="' + POS_BEZ + '" aria-pressed="' + pressed(POS_BEZ) + '">' +
     '<div class="kpi-label">bez porovnání</div><div class="kpi-value' + (nb ? '' : ' zero') + '">' + fmtNum(nb) + '</div><small>' + esc(grily(nb)) + ', zatím žádná ověřená nabídka</small></button>';
   $('kpiPos').innerHTML = html;
   $('kpiPos').querySelectorAll('button[data-pos]').forEach(function(b){
     b.addEventListener('click', function(){
       var val = b.getAttribute('data-pos');
-      state.filter.pozice = state.filter.pozice === val ? '' : val;
-      $('fPoz').value = state.filter.pozice;
-      renderSummary(); renderProducts();
+      setPos(state.filter.pozice === val ? '' : val, false);
     });
   });
+  var vl = v.querySelector('a[data-pos]');
+  if (vl) vl.addEventListener('click', function(e){ e.preventDefault(); setPos(POS_DRAZSI, true); });
+  renderNotice(stamp);
+}
 
-  // upozornění: výpadky, stará data, podezřelé nabídky
+// nastavení filtru pozice (karty, odkaz ve větě, URL); scroll = přejet k tabulce
+function setPos(val, scroll){
+  var ae = document.activeElement, focusPos = ae && ae.getAttribute && ae.getAttribute('data-pos');
+  state.filter.pozice = val;
+  renderSummary(); renderProducts(); writeHash();
+  // karty se překreslily, fokus se vrátí na tu, na které byl (klávesnice)
+  if (focusPos && !scroll){ var again = $('kpiPos').querySelector('button[data-pos="' + focusPos.replace(/"/g, '') + '"]'); if (again) again.focus(); }
+  if (scroll) $('prodWrap').scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'start' });
+}
+
+// upozornění: výpadky, stará data, podezřelé nabídky
+function renderNotice(stamp){
+  var d = state.data;
   var bad = d.konkurenti.filter(function(k){ return k.vypadek; });
   var waiting = d.konkurenti.filter(function(k){ return !k.stazeno_ok; });
   var parts = [];
@@ -831,51 +1037,95 @@ function initFilters(){
   state.data.produkty.forEach(function(p){ if (p.rada) rady[p.rada] = true; });
   var sel = $('fRada');
   sel.innerHTML = '<option value="">Všechny řady</option>' + Object.keys(rady).sort().map(function(r){ return '<option>' + esc(r) + '</option>'; }).join('');
-  var ps = $('fPoz');
-  ps.innerHTML = '<option value="">Všechny pozice</option>' + POS.map(function(p){ return '<option value="' + esc(p.key) + '">' + esc(p.label) + '</option>'; }).join('') +
-    '<option value="' + POS_BEZ + '">bez porovnání</option>';
-  $('fSearch').oninput = function(){ state.filter.q = this.value; renderProducts(); };
-  sel.onchange = function(){ state.filter.rada = this.value; renderProducts(); };
-  ps.onchange = function(){ state.filter.pozice = this.value; renderSummary(); renderProducts(); };
-  $('fCmp').onchange = function(){ state.filter.cmp = this.checked; renderProducts(); };
-  $('fReset').onclick = function(){
-    state.filter = { q: '', rada: '', pozice: '', cmp: false };
-    $('fSearch').value = ''; sel.value = ''; ps.value = ''; $('fCmp').checked = false;
-    renderSummary(); renderProducts();
-    $('fSearch').focus();
-  };
+  $('fSearch').oninput = function(){ state.filter.q = this.value; renderProducts(); writeHash(); };
+  sel.onchange = function(){ state.filter.rada = this.value; renderProducts(); writeHash(); };
+  var nAkce = state.data.produkty.filter(hasAkce).length;
+  $('akceCount').textContent = '(' + fmtNum(nAkce) + ')';
+  $('fAkce').setAttribute('aria-label', 'Jen grily, u kterých má konkurence akci: ' + fmtNum(nAkce) + ' ' + grily(nAkce));
+  $('fAkce').onchange = function(){ state.filter.akce = this.checked; renderProducts(); writeHash(); syncControls(); };
+  // změna hashe zvenku (tlačítko zpět, vložený odkaz): načíst stav a překreslit
+  window.addEventListener('hashchange', function(){
+    if (location.hash === lastHash) return;
+    readHash(); syncControls(); renderSummary(); renderProducts();
+  });
+  // po změně šířky okna, rámečku nebo po doběhnutí písma znovu rozhodnout, jestli se tabulka vejde
+  var rt = null;
+  function later(){ clearTimeout(rt); rt = setTimeout(fitCheck, 120); }
+  window.addEventListener('resize', later);
+  if (window.ResizeObserver) new ResizeObserver(later).observe($('prodWrap'));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(later);
 }
 
-var COLS = [
-  { key: 'nazev', label: 'Gril', cls: 'name' },
-  { key: 'cena', label: 'Naše cena', cls: 'num' },
-  { key: 'min_cena', label: 'Nejnižší u konkurence', cls: 'num' },
-  { key: 'kdo', label: 'Kdo ji má', cls: 'kdo', sort: false },
-  { key: 'rozdil_pct', label: 'Rozdíl', cls: 'num diff' },
-  { key: 'pozice', label: 'Pozice', cls: '' },
-  { key: 'pocet_obchodu', label: 'Obchodů s nabídkou', cls: 'num hide-m' }
-];
+function resetFilters(){
+  state.filter = { q: '', rada: '', pozice: '', akce: false };
+  syncControls();
+  renderSummary(); renderProducts(); writeHash();
+  $('fSearch').focus();
+}
+
+// Obchody konkurence = sloupce matice. Berou se z nabídek u produktů (obchod bez jediné nabídky sloupec nemá),
+// řazení podle počtu grilů, u kterých má obchod nabídku. Přepočítá se při každém start().
+// BYSHOP[gid][obchod] = nabídka obchodu u grilu (kdyby jich měl víc, vyhraje ta, která se počítá a je nejlevnější).
+var SHOPS = [];
+var BYSHOP = {};
+function buildShops(){
+  var counts = {};
+  BYSHOP = {};
+  state.data.produkty.forEach(function(p){
+    var byShop = BYSHOP[p.gid] = {};
+    (p.nabidky || []).forEach(function(n){
+      if (!n || !n.konkurent) return;
+      counts[n.konkurent] = (counts[n.konkurent] || 0) + 1;
+      var cur = byShop[n.konkurent];
+      if (!cur) { byShop[n.konkurent] = n; return; }
+      var a = offerInfo(p, cur), b = offerInfo(p, n);
+      if ((b.counts && !a.counts) || (b.counts === a.counts && isNum(n.cena) && (!isNum(cur.cena) || n.cena < cur.cena))) byShop[n.konkurent] = n;
+    });
+  });
+  SHOPS = Object.keys(counts).sort(function(a, b){ return counts[b] - counts[a] || (a < b ? -1 : 1); }).map(function(k){
+    return { key: k, label: k.replace(/^www\./, '').replace(/\.cz$/, ''), n: counts[k] };
+  });
+}
+function cols(){
+  return [{ key: 'nazev', label: 'Gril', cls: 'name' }, { key: 'cena', label: 'Naše cena', cls: 'num our' }]
+    .concat(SHOPS.map(function(s){ return { key: 'shop:' + s.key, label: s.label, cls: 'shop', shop: s }; }))
+    .concat([{ key: 'rozdil_pct', label: 'Rozdíl', cls: 'num diff' }, { key: 'pozice', label: 'Pozice', cls: 'pos' }]);
+}
 var POS_ORDER = { 'nejlevnější': 0, 'shoda': 1, 'do 2 %': 2, '2-5 %': 3, 'nad 5 %': 4 };
+
+// rozdíl ceny obchodu proti naší (jen započtená nabídka), null = obchod gril nemá nebo se nepočítá
+function shopDiff(p, shopKey){
+  var n = (BYSHOP[p.gid] || {})[shopKey];
+  if (!n || !isNum(n.cena) || !isNum(p.cena) || !offerInfo(p, n).counts) return null;
+  return n.cena - p.cena;
+}
 
 function sortVal(p, key){
   if (key === 'nazev') return norm(p.nazev);
   if (key === 'pozice') return p.pozice ? POS_ORDER[p.pozice] : null;
+  if (key.indexOf('shop:') === 0) return shopDiff(p, key.slice(5));
   var v = p[key];
   return isNum(v) ? v : null;
 }
 
 function isDefaultFilter(){
   var f = state.filter;
-  return !f.q && !f.rada && !f.pozice && !f.cmp;
+  return !f.q && !f.rada && !f.pozice && !f.akce;
+}
+
+function matchesPos(p, want){
+  if (!want) return true;
+  if (want === POS_BEZ) return !p.pozice;
+  if (want === POS_DRAZSI) return p.pozice === 'do 2 %' || p.pozice === '2-5 %' || p.pozice === 'nad 5 %';
+  return p.pozice === want;
 }
 
 function filteredProducts(){
   var f = state.filter, q = norm(f.q);
   var list = state.data.produkty.filter(function(p){
     if (f.rada && p.rada !== f.rada) return false;
-    if (f.pozice === POS_BEZ){ if (p.pozice) return false; }
-    else if (f.pozice && p.pozice !== f.pozice) return false;
-    if (f.cmp && !p.pozice) return false;
+    if (!matchesPos(p, f.pozice)) return false;
+    if (f.akce && !hasAkce(p)) return false;
     if (q && norm(p.nazev + ' ' + p.rada + ' ' + p.gid).indexOf(q) < 0) return false;
     return true;
   });
@@ -892,51 +1142,96 @@ function filteredProducts(){
   return list;
 }
 
-// Věta "naše cena je o X Kč vyšší / nižší / stejná" pro detail nabídky
-function ourVsTheirs(our, their){
-  if (!isNum(our) || !isNum(their)) return dash();
-  var diff = our - their;
-  if (Math.abs(diff) < 0.5) return '<span class="diff-zero">stejná</span>';
-  return '<span class="' + diffCls(diff) + '">o ' + fmtNum(Math.abs(diff)) + ' Kč ' + (diff > 0 ? 'vyšší' : 'nižší') + '</span>';
+// Posouzení nabídky: počítá se do nejnižší ceny? Když ne, proč (krátký text do buňky + delší do tooltipu).
+function offerInfo(p, n){
+  var maxAge = (state.data.nastaveni && state.data.nastaveni.max_age_days) || 8;
+  var o = { counts: true, why: '', whyLong: '', warn: '' };
+  if (n.karantena){ o.counts = false; o.why = 'podezřelá'; o.whyLong = 'podezřelá cena (liší se od naší o víc než ' + ((state.data.nastaveni && state.data.nastaveni.quarantine_pct) || 50) + ' % nebo je chybná)'; }
+  else if (!n.cerstva){ o.counts = false; o.why = 'stará'; o.whyLong = 'nabídka je starší než ' + maxAge + ' dní'; }
+  else if (n.stav === 'chyba' || n.stav === 'blokováno') o.warn = 'web naposledy nešel načíst, cena je z posledního úspěšného načtení';
+  if (o.counts && n.dostupnost === 'není skladem'){ o.counts = false; o.why = 'není skl.'; o.whyLong = 'není skladem'; }
+  o.isMin = o.counts && isNum(n.cena) && isNum(p.min_cena) && Math.abs(n.cena - p.min_cena) < 0.5;
+  return o;
 }
 
+// Rozbalený detail: jen dostupnost, čas načtení a odkazy (ceny jsou v matici)
 function offersTable(p){
-  var maxAge = (state.data.nastaveni && state.data.nastaveni.max_age_days) || 8;
   var head = '';
   if (isNum(p.zmena_min) && p.zmena_min !== 0) head += '<span>Nejnižší cena u konkurence se od minulé aktualizace změnila o ' + signedKc(p.zmena_min) + '</span>';
   if (p.akce && isNum(p.cena_bez_akce) && p.cena_bez_akce !== p.cena) head += '<span>Naše akční cena ' + fmtNum(p.cena) + ' Kč, běžná ' + fmtNum(p.cena_bez_akce) + ' Kč</span>';
+  if (p.pokryti_z) head += '<span>Nabídku má ' + fmtNum(p.pocet_obchodu) + ' z ' + fmtNum(p.pokryti_z) + ' sledovaných obchodů</span>';
   if (!p.nabidky || !p.nabidky.length) return (head ? '<div class="detail-head">' + head + '</div>' : '') + '<p class="muted" style="padding:10px 0">Zatím žádná ověřená nabídka konkurence pro tento gril.</p>';
   var rows = p.nabidky.map(function(n){
-    var isMin = isNum(n.cena) && isNum(p.min_cena) && Math.abs(n.cena - p.min_cena) < 0.5 && !n.karantena && n.cerstva;
-    var counts = true, flags = [];
-    if (n.karantena){ flags.push('<span class="badge s-bad">podezřelá cena</span>'); counts = false; }
-    else if (!n.cerstva){ flags.push('<span class="badge s-off">starší než ' + esc(maxAge) + ' dní</span>'); counts = false; }
-    else if (n.stav === 'chyba' || n.stav === 'blokováno') flags.push('<span class="badge s-warn">web naposledy nešel načíst</span>');
-    if (n.dostupnost === 'není skladem') counts = false;
-    if (!counts) flags.push('<span class="muted">nepočítá se</span>');
-    return '<tr' + (counts ? '' : ' class="off"') + '><td' + (counts ? '' : ' class="off"') + '>' + esc(n.konkurent) + '</td>' +
-      '<td class="num ' + (isMin ? 'best' : (counts ? '' : 'off')) + '">' + kc(n.cena) + (isMin ? ' <span class="sr-only">(nejnižší)</span>' : '') + '</td>' +
-      '<td>' + ourVsTheirs(p.cena, n.cena) + '</td>' +
+    var o = offerInfo(p, n), flags = [];
+    if (o.whyLong) flags.push('<span class="badge ' + (n.karantena ? 's-bad' : 's-off') + '">' + esc(o.whyLong) + '</span>');
+    if (o.warn) flags.push('<span class="badge s-warn">' + esc(o.warn) + '</span>');
+    if (!o.counts) flags.push('<span class="muted">nepočítá se</span>');
+    // akce obchodu (štítek + původní cena) a pokles za 30 dní: text, ne jen barva
+    var ak = offerAkce(n), akce = [];
+    if (ak) akce.push('<span class="badge s-warn">' + esc(ak.label) + '</span> ' + esc(ak.long));
+    if (poklesText(n, o)) akce.push(esc(poklesText(n, o)));
+    return '<tr' + (o.counts ? '' : ' class="off"') + '><td' + (o.counts ? '' : ' class="off"') + '>' + esc(n.konkurent) + '</td>' +
+      '<td class="num ' + (o.isMin ? 'best' : (o.counts ? '' : 'off')) + '">' + kc(n.cena) + (o.isMin ? ' <span class="sr-only">(nejnižší)</span>' : '') + '</td>' +
+      '<td class="akce">' + (akce.length ? akce.join('<br>') : dash()) + '</td>' +
       '<td>' + availBadge(n.dostupnost) + '</td><td class="muted date">' + esc(fmtDate(n.stazeno)) + '</td>' +
       '<td>' + flags.join(' ') + '</td>' +
       '<td><a href="' + esc(safeUrl(n.url)) + '" target="_blank" rel="noopener noreferrer">otevřít<span class="sr-only"> nabídku ' + esc(n.konkurent) + '</span></a></td></tr>';
   }).join('');
   return (head ? '<div class="detail-head">' + head + '</div>' : '') +
-    '<div class="detail-scroll"><table><caption class="sr-only">Ceny ' + esc(p.nazev) + ' v obchodech konkurence</caption><thead><tr><th>Obchod</th><th class="num">Jeho cena</th><th>Naše cena je</th><th>Dostupnost</th><th>Načteno</th><th>Poznámka</th><th>Odkaz</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    '<div class="detail-scroll"><table><caption class="sr-only">Nabídky ' + esc(p.nazev) + ' v obchodech konkurence: akce, dostupnost a čas načtení</caption><thead><tr><th>Obchod</th><th class="num">Jeho cena</th><th>Akce obchodu</th><th>Dostupnost</th><th>Načteno</th><th>Poznámka</th><th>Odkaz</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+
+// Buňka obchodu v matici: cena jako odkaz na nabídku, pod ní rozdíl proti naší ceně (nebo důvod, proč se nepočítá)
+function shopCell(p, n, sorted){
+  if (!n) return '<td class="shop none' + (sorted ? ' sorted' : '') + '"><span class="sr-only">nenabízí</span></td>';
+  var o = offerInfo(p, n);
+  var cls = 'shop' + (sorted ? ' sorted' : ''), sub = '', tip = n.konkurent + ': ' + (isNum(n.cena) ? fmtNum(n.cena) + ' Kč' : 'cena neznámá');
+  var diff = isNum(n.cena) && isNum(p.cena) ? n.cena - p.cena : null;
+  if (!o.counts){
+    cls += ' off';
+    sub = o.why;
+    tip += ', ' + o.whyLong + ', do nejnižší ceny se nepočítá';
+  } else if (diff === null){
+    cls += ' eq';
+  } else if (Math.abs(diff) < 0.5){
+    cls += ' eq';
+    tip += ', stejná cena jako u nás';
+  } else {
+    cls += diff < 0 ? ' lo' : ' hi';
+    sub = (diff < 0 ? '-' : '+') + fmtNum(Math.abs(diff));
+    tip += ', o ' + fmtNum(Math.abs(diff)) + ' Kč ' + (diff < 0 ? 'levnější' : 'dražší') + ' než my';
+  }
+  if (o.isMin){ cls += ' min'; tip += '. Nejnižší započtená cena v řádku'; }
+  if (o.counts && n.dostupnost && n.dostupnost !== 'skladem') tip += '. Dostupnost: ' + n.dostupnost;
+  if (o.warn) tip += '. ' + o.warn.charAt(0).toUpperCase() + o.warn.slice(1);
+  // akce obchodu: malý štítek v buňce, původní cena v tooltipu a pro čtečku; pokles za 30 dní jen v tooltipu
+  var ak = offerAkce(n);
+  if (ak) tip += '. ' + ak.long;
+  var pk = poklesText(n, o);
+  if (pk) tip += '. ' + pk.charAt(0).toUpperCase() + pk.slice(1);
+  tip += '. Načteno ' + fmtDate(n.stazeno) + '.';
+  var sr = '<span class="sr-only"> ' + esc(tip.replace(/^[^:]+: /, '')) + '</span>';
+  var url = safeUrl(n.url);
+  var inner = kc(n.cena) === dash() ? dash() : fmtNum(n.cena);
+  var body = inner + (sub ? '<small aria-hidden="true">' + esc(sub) + '</small>' : '') + (ak ? '<small class="akce" aria-hidden="true">' + esc(ak.label) + '</small>' : '') + sr;
+  var link = url !== '#' ? '<a class="pc" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer" title="' + esc(tip) + '">' + body + '</a>'
+                         : '<span class="pc" title="' + esc(tip) + '">' + body + '</span>';
+  return '<td class="' + cls + '">' + link + '</td>';
 }
 
 function productRow(p){
   var open = !!state.open[p.gid];
-  var kk = p.kdo || [];
-  var kdo = kk.length ? esc(kk[0]) + (kk.length > 1 ? '<span class="more">+ ' + (kk.length - 1) + ' ' + esc(plural(kk.length - 1, 'další', 'další', 'dalších')) + '</span>' : '') : dash();
-  var sub = (p.rada ? esc(p.rada) : '') + (p.akce ? '<span class="badge s-warn">akční cena</span>' : '');
-  var tr = '<tr class="prod' + (p.pozice ? '' : ' nocmp') + '"><td class="name"><button type="button" class="toggle" data-gid="' + esc(p.gid) + '" aria-expanded="' + open + '" aria-controls="d-' + esc(p.gid) + '"><span>' + esc(p.nazev) + '</span></button>' +
-    (sub ? '<span class="sub">' + sub + '</span>' : '') + '</td>' +
-    '<td class="num">' + kc(p.cena) + '</td><td class="num">' + kc(p.min_cena) + '</td><td class="kdo"' + (kk.length > 1 ? ' title="' + esc(kk.join(', ')) + '"' : '') + '>' + kdo + '</td>' +
+  var byShop = BYSHOP[p.gid] || {};
+  // řada se pod název nepíše (je ve filtru a většinou i v názvu), zůstává jen štítek akční ceny
+  var sub = p.akce ? '<span class="badge s-warn">akční cena</span>' : '';
+  // název grilu je hlavička řádku (čtečka ho přečte u každé ceny v řádku)
+  var tr = '<tr class="prod' + (p.pozice ? '' : ' nocmp') + '"><th scope="row" class="name"><button type="button" class="toggle" data-gid="' + esc(p.gid) + '" aria-expanded="' + open + '" aria-controls="d-' + esc(p.gid) + '"><span>' + esc(p.nazev) + '</span></button>' +
+    (sub ? '<span class="sub">' + sub + '</span>' : '') + '</th>' +
+    '<td class="num our">' + kc(p.cena) + '</td>' +
+    SHOPS.map(function(s){ return shopCell(p, byShop[s.key], state.sort.key === 'shop:' + s.key); }).join('') +
     '<td class="num diff">' + (isNum(p.rozdil_pct) ? '<span class="pct ' + diffCls(p.rozdil_pct) + '">' + fmtPct(p.rozdil_pct) + '</span><span class="kc">' + (p.rozdil_kc > 0 ? '+' : '') + fmtNum(p.rozdil_kc) + ' Kč</span>' : dash()) + '</td>' +
-    '<td>' + posBadge(p.pozice) + '</td>' +
-    '<td class="num hide-m">' + (p.pokryti_z ? esc(p.pocet_obchodu + ' z ' + p.pokryti_z) : esc(p.pocet_obchodu)) + '</td></tr>';
-  tr += '<tr class="detail" id="d-' + esc(p.gid) + '" data-detail="' + esc(p.gid) + '"' + (open ? '' : ' hidden') + '><td colspan="' + COLS.length + '">' + (open ? offersTable(p) : '') + '</td></tr>';
+    '<td class="pos">' + posBadge(p.pozice) + '</td></tr>';
+  tr += '<tr class="detail" id="d-' + esc(p.gid) + '" data-detail="' + esc(p.gid) + '"' + (open ? '' : ' hidden') + '><td colspan="' + cols().length + '">' + (open ? offersTable(p) : '') + '</td></tr>';
   return tr;
 }
 
@@ -948,13 +1243,30 @@ function renderProducts(){
   var noCmp = collapse ? list.filter(function(p){ return !p.pozice; }) : [];
   var shown = collapse ? list.filter(function(p){ return p.pozice; }) : list;
   var visible = shown.length + (state.showNoCmp ? noCmp.length : 0);
-  $('countInfo').innerHTML = '<span>Zobrazeno ' + fmtNum(visible) + ' z ' + fmtNum(all) + ' ' + esc(grily(all)) + '</span>' +
+  // počítadlo: co je vidět, jaký filtr platí a tlačítko „Zrušit filtry“ jen když je co rušit
+  var f = state.filter, active = [];
+  if (f.pozice) active.push(posLabel(f.pozice));
+  if (f.akce) active.push('jen akce konkurence');
+  if (f.rada) active.push('řada ' + f.rada);
+  if (f.q) active.push('„' + f.q + '“');
+  $('countInfo').innerHTML = '<span>Zobrazeno <strong>' + fmtNum(visible) + '</strong> z ' + fmtNum(all) + ' ' + esc(grily(all)) + '</span>' +
+    (active.length ? '<span>filtr: ' + esc(active.join(', ')) + '</span><button type="button" class="fbtn" id="fReset">Zrušit filtry</button>' : '') +
     (noCmp.length && !state.showNoCmp ? '<span>' + fmtNum(noCmp.length) + ' bez porovnání je sbaleno na konci tabulky</span>' : '');
+  var rb = $('fReset');
+  if (rb) rb.addEventListener('click', resetFilters);
+  var COLS = cols();
+  // hlavička: v každém th je skutečné tlačítko (řazení klávesnicí i čtečkou), aria-sort zůstává na th
   var head = '<thead><tr>' + COLS.map(function(c){
-    var active = state.sort.key === c.key;
-    var sortable = c.sort !== false;
-    return '<th scope="col" class="' + c.cls + (sortable ? '' : ' nosort') + '"' + (sortable ? ' tabindex="0" data-key="' + c.key + '" aria-sort="' + (active ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '" title="Seřadit podle: ' + esc(c.label) + '"' : '') + '>' +
-      esc(c.label) + (active ? '<span class="arrow" aria-hidden="true">' + (state.sort.dir > 0 ? '▲' : '▼') + '</span>' : '') + '</th>';
+    var isActive = state.sort.key === c.key;
+    var arrow = '<span class="arrow" aria-hidden="true">' + (isActive ? (state.sort.dir > 0 ? '▲' : '▼') : '↕') + '</span>';
+    var attrs = ' data-key="' + esc(c.key) + '" aria-sort="' + (isActive ? (state.sort.dir > 0 ? 'ascending' : 'descending') : 'none') + '"';
+    if (c.shop){
+      // hlavička obchodu: krátký název (doména bez .cz), počet grilů s nabídkou; kliknutí seřadí podle rozdílu jeho ceny proti naší
+      return '<th scope="col" class="shop"' + attrs + ' title="' + esc(c.shop.key) + ': nabídku má u ' + fmtNum(c.shop.n) + ' ' + esc(grily(c.shop.n)) + '. Seřadit podle rozdílu jeho ceny proti naší">' +
+        '<button type="button" class="sortbtn">' + esc(c.label) + arrow + '<span class="sr-only"> (' + esc(c.shop.key) + '), seřadit podle rozdílu jeho ceny proti naší</span></button>' +
+        '<small>' + fmtNum(c.shop.n) + ' ' + esc(grily(c.shop.n)) + '</small></th>';
+    }
+    return '<th scope="col" class="' + c.cls + '"' + attrs + ' title="Seřadit podle: ' + esc(c.label) + '"><button type="button" class="sortbtn">' + esc(c.label) + arrow + '<span class="sr-only">, seřadit</span></button></th>';
   }).join('') + '</tr></thead>';
   var body = shown.map(productRow).join('');
   if (noCmp.length){
@@ -971,16 +1283,15 @@ function renderProducts(){
     renderProducts();
     var again = $('showNoCmp'); if (again) again.focus();
   });
+  // kliknutí kamkoli do hlavičky (Enter/mezerník na tlačítku vyvolá click, který probublá sem)
   $('prodTable').querySelectorAll('th[data-key]').forEach(function(th){
-    var act = function(){
+    th.addEventListener('click', function(){
       var k = th.getAttribute('data-key');
-      if (state.sort.key === k) state.sort.dir = -state.sort.dir; else state.sort = { key: k, dir: k === 'nazev' ? 1 : -1 };
-      renderProducts();
-      var again = $('prodTable').querySelector('th[data-key="' + k + '"]');
+      if (state.sort.key === k) state.sort.dir = -state.sort.dir; else state.sort = { key: k, dir: defaultDir(k) };
+      renderProducts(); writeHash();
+      var again = $('prodTable').querySelector('th[data-key="' + k.replace(/"/g, '') + '"] button');
       if (again) again.focus();
-    };
-    th.addEventListener('click', act);
-    th.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); act(); } });
+    });
   });
   $('prodTable').querySelectorAll('button.toggle').forEach(function(b){
     b.addEventListener('click', function(){
@@ -991,6 +1302,24 @@ function renderProducts(){
       if (again) again.focus();
     });
   });
+  fitCheck();
+}
+
+// Vejde se matice na šířku? Když ano, rámeček neposouvá (hlavička se lepí k oknu); když ne, posouvá se v rámečku a ukáže se nápověda.
+function fitCheck(){
+  var w = $('prodWrap'), t = $('prodTable');
+  if (!w || !t || !state.data) return;
+  // měří se bez tříd (ve stavu fits by scrollWidth nic neřekl), třídy se mění jen při změně výsledku
+  var had = w.classList.contains('fits') ? 'fits' : (w.classList.contains('scrolls') ? 'scrolls' : '');
+  w.classList.remove('fits', 'scrolls');
+  var fits = t.scrollWidth <= w.clientWidth + 1;
+  var now = fits ? 'fits' : 'scrolls';
+  w.classList.add(now);
+  if (now === had) return;
+  $('scrollHint').hidden = fits;
+  // posuvný rámeček jde ovládat i klávesnicí (fokus + šipky), při fits zbytečná zastávka tabulátoru mizí
+  if (fits){ w.removeAttribute('tabindex'); w.removeAttribute('role'); w.removeAttribute('aria-label'); w.removeAttribute('aria-describedby'); }
+  else { w.setAttribute('tabindex', '0'); w.setAttribute('role', 'region'); w.setAttribute('aria-label', 'Tabulka cen grilů, posouvá se do stran i dolů'); w.setAttribute('aria-describedby', 'scrollHint'); }
 }
 
 // ---------- konkurenti, změny, graf ----------
@@ -1005,13 +1334,14 @@ function stateBadge(k){
 function renderCompetitors(){
   var rows = state.data.konkurenti.map(function(k){
     var waiting = !k.stazeno_ok;
-    return '<tr' + (waiting ? ' class="nocmp"' : '') + '><td><strong>' + esc(k.konkurent) + '</strong></td><td>' + stateBadge(k) + '</td><td class="muted date">' + esc(fmtDate(k.cas)) + '</td>' +
+    return '<tr' + (waiting ? ' class="nocmp"' : '') + '><th scope="row" class="name">' + esc(k.konkurent) + '</th><td>' + stateBadge(k) + '</td><td class="muted date">' + esc(fmtDate(k.cas)) + '</td>' +
       '<td class="num">' + (waiting ? dash() : fmtNum(k.sparovano)) + '</td><td class="num">' + (waiting ? dash() : fmtNum(k.levnejsi)) + '</td><td class="num">' + (waiting ? dash() : fmtNum(k.shoda)) + '</td><td class="num">' + (waiting ? dash() : fmtNum(k.drazsi)) + '</td>' +
       '<td class="num">' + (isNum(k.prumer_pct) && !waiting ? signedPct(k.prumer_pct) : dash()) + '</td>' +
+      '<td class="num">' + (waiting ? dash() : fmtNum(k.akce_pocet || 0)) + '</td>' +
       '<td class="num">' + (k.url_celkem ? fmtNum(k.stazeno_ok) + ' z ' + fmtNum(k.url_celkem) : dash()) + '</td></tr>';
   }).join('');
-  $('compTable').innerHTML = '<caption class="sr-only">Obchody konkurence a stav načítání</caption><thead><tr><th scope="col" class="nosort">Obchod</th><th scope="col" class="nosort">Stav</th><th scope="col" class="nosort">Naposledy načteno</th><th scope="col" class="num nosort">Porovnáno grilů</th><th scope="col" class="num nosort">Levnější než my</th><th scope="col" class="num nosort">Stejná cena</th><th scope="col" class="num nosort">Dražší než my</th><th scope="col" class="num nosort">Náš průměrný rozdíl</th><th scope="col" class="num nosort">Načtené stránky</th></tr></thead><tbody>' +
-    (rows || '<tr><td colspan="9" class="muted" style="padding:18px">Zatím není nastaven žádný obchod konkurence.</td></tr>') + '</tbody>';
+  $('compTable').innerHTML = '<caption class="sr-only">Obchody konkurence a stav načítání</caption><thead><tr><th scope="col" class="nosort name">Obchod</th><th scope="col" class="nosort">Stav</th><th scope="col" class="nosort">Naposledy načteno</th><th scope="col" class="num nosort">Porovnáno grilů</th><th scope="col" class="num nosort">Levnější než my</th><th scope="col" class="num nosort">Stejná cena</th><th scope="col" class="num nosort">Dražší než my</th><th scope="col" class="num nosort">Náš průměrný rozdíl</th><th scope="col" class="num nosort">Grilů v akci</th><th scope="col" class="num nosort">Načtené stránky</th></tr></thead><tbody>' +
+    (rows || '<tr><td colspan="10" class="muted" style="padding:18px">Zatím není nastaven žádný obchod konkurence.</td></tr>') + '</tbody>';
 }
 
 function renderChanges(){
